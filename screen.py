@@ -1,3 +1,5 @@
+# -*- coding:utf-8 -*-
+#截图
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import *
 import win32gui
@@ -8,3 +10,4 @@ app = QApplication(sys.argv)
 screen = QApplication.primaryScreen()
 img = screen.grabWindow(hwnd).toImage()
 img.save("screenshot.jpg")
+boost = img.copy(200,200,200,200) 

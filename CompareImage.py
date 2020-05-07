@@ -1,3 +1,5 @@
+# -*- coding:utf-8 -*-
+#图片比较
 from skimage.measure import compare_ssim
 import cv2
 

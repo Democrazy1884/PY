@@ -1,3 +1,5 @@
+# -*- coding:utf-8 -*-
+#获取窗口句柄
 import win32gui
 hwnd_title = dict()
 def get_all_hwnd(hwnd,mouse):
