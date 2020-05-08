@@ -1,0 +1,29 @@
+{
+    "cSpell.ignoreWords": [
+        "android",
+        "app",
+        "ccoeff",
+        "enabled",
+        "findstr",
+        "hwnd",
+        "img",
+        "imread",
+        "imwrite",
+        "linting",
+        "mathc",
+        "numpy",
+        "popen",
+        "pylint",
+        "python",
+        "scrcpy",
+        "ssim",
+        "stword",
+        "touhoulo",
+        "touhoulostword",
+        "yapf"
+    ],
+    "cSpell.words": [
+        "dumpsys"
+    ]
+
+}
