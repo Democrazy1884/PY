@@ -1,4 +1,5 @@
 import functions
+import fight
 import time
 
 functions.adb.order('adb devices')

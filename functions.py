@@ -1,7 +1,4 @@
 # -*- coding:utf-8 -*-
-import time
-
-
 def mathc_img(image, target, value):  # 图像匹配
     import cv2
     import numpy as np
@@ -25,11 +22,10 @@ def mathc_img(image, target, value):  # 图像匹配
 
 
 # 图像裁剪cut_image("screenshot.jpg","test.jpg")
-def cut_image(y0, y1, x0, x1, path_image1, path_image2):
-    import cv2
-    img = cv2.imread(path_image1)
-    cropped = img[0:128, 0:512]  # 裁剪坐标为[y0:y1, x0:x1]
-    cv2.imwrite(path_image2, cropped)
+def cut_image(y0, y1, x0, x1, path_image1):
+    img = path_image1
+    cropped = img[y0:y1, x0:x1]  # 裁剪坐标为[y0:y1, x0:x1]
+    return cropped
 
 
 def compare_image(path_image1, path_image2):  # 图片比较
@@ -38,8 +34,8 @@ def compare_image(path_image1, path_image2):  # 图片比较
     import warnings
 
     warnings.filterwarnings("ignore")
-    imageA = cv2.imread(path_image1)
-    imageB = cv2.imread(path_image2)
+    imageA = path_image1
+    imageB = path_image2
 
     grayA = cv2.cvtColor(imageA, cv2.COLOR_BGR2GRAY)
     grayB = cv2.cvtColor(imageB, cv2.COLOR_BGR2GRAY)
@@ -61,7 +57,22 @@ def screenshot():  # 截图
     screen = QApplication.primaryScreen()
     img = screen.grabWindow(hwnd).toImage()
     img = img.copy(0, 52, 1920, 896)
-    img.save("temp.jpg")
+    img = convertQImageToMat(img)
+    return img
+
+
+def convertQImageToMat(incomingImage):
+    '''  Converts a QImage into an opencv MAT format  '''
+    import numpy as np
+    incomingImage = incomingImage.convertToFormat(4)
+
+    width = incomingImage.width()
+    height = incomingImage.height()
+
+    ptr = incomingImage.bits()
+    ptr.setsize(incomingImage.byteCount())
+    arr = np.array(ptr).reshape(height, width, 4)  # Copies the data
+    return arr
 
 
 class adb:
@@ -71,56 +82,66 @@ class adb:
         return adb_return
 
     def click(x, y):
+        import random
+        import time
+        x = x + random.randint(-40, 40)
+        y = y + random.randint(-20, 20)
         adb_return = adb.order('adb shell input tap %d %d' % (x, y))
-        time.sleep(0.5)
+        time.sleep(0.7)
         return adb_return
 
 
 class game:
     def attack(value):
+        import time
         if value == 1:
-            adb_return = adb.click()  # 普通攻击1
+            adb_return = adb.click(885, 878)  # 普通攻击1
         else:
-            adb_return = adb.click()  # 普通攻击2
+            adb_return = adb.click(1485, 880)  # 普通攻击2
         time.sleep(0.5)
         return adb_return
 
     def card(value):
+        import time
+        adb_return = adb.click(461, 716)
+        time.sleep(1)
         if value == 1:
-            adb_return = adb.click()  # 符卡1
+            adb_return = adb.click(669, 591)  # 符卡1
         elif value == 2:
-            adb_return = adb.click()  # 符卡2
+            adb_return = adb.click(984, 494)  # 符卡2
         elif value == 3:
-            adb_return = adb.click()  # 符卡3
+            adb_return = adb.click(1241, 347)  # 符卡3
         else:
             pass
+        time.sleep(2)
         return adb_return
 
     def graze(value):
         # 当前结界数量
-        if value == 1:
-            adb_return = adb.click()  # 结界1
-        elif value == 2:
-            adb_return = adb.click()  # 结界2
-        elif value == 3:
-            adb_return = adb.click()  # 结界3
+        if value >= 1:
+            adb_return = adb.click(2080, 631)  # 结界1
+        elif value >= 2:
+            adb_return = adb.click(2080, 631)  # 结界2
+        elif value >= 3:
+            adb_return = adb.click(2080, 631)  # 结界3
         else:
             pass
         return adb_return
 
     def boost(value):
         # 当前p点
-        if value == 1:
-            adb_return = adb.click()  # boost1
-        elif value == 2:
-            adb_return = adb.click()  # boost2
-        elif value == 3:
-            adb_return = adb.click()  # boost3
+        if value >= 1:
+            adb_return = adb.click(1959, 846)  # boost1
+        elif value >= 2:
+            adb_return = adb.click(1959, 846)  # boost2
+        elif value >= 3:
+            adb_return = adb.click(1959, 846)  # boost3
         else:
             pass
         return adb_return
 
     def skill(value):
+        adb_return = adb.click(2182, 806)
         if value == 1.1:
             adb_return = adb.click()
         elif value == 1.2:
