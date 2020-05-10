@@ -23,6 +23,9 @@ def mathc_img(image, target, value):  # 图像匹配
 
 # 图像裁剪cut_image("screenshot.jpg","test.jpg")
 def cut_image(y0, y1, x0, x1, path_image1):
+    import cv2
+    if isinstance(path_image1, str):
+        img = cv2.imwrite(path_image1)
     img = path_image1
     cropped = img[y0:y1, x0:x1]  # 裁剪坐标为[y0:y1, x0:x1]
     return cropped
@@ -33,6 +36,10 @@ def compare_image(path_image1, path_image2):  # 图片比较
     import cv2
     import warnings
 
+    if isinstance(path_image1, str):
+        imageA = cv2.imwrite(path_image1)
+    if isinstance(path_image2, str):
+        imageB = cv2.imwrite(path_image2)
     warnings.filterwarnings("ignore")
     imageA = path_image1
     imageB = path_image2
@@ -40,7 +47,7 @@ def compare_image(path_image1, path_image2):  # 图片比较
     grayA = cv2.cvtColor(imageA, cv2.COLOR_BGR2GRAY)
     grayB = cv2.cvtColor(imageB, cv2.COLOR_BGR2GRAY)
 
-    (score, diff) = ssim(grayA, grayB, full=True)
+    (score, diff) = ssim(grayA, grayB, full=True, multichannel=True)
     # print("SSIM: {}".format(score))
     return score
     # compare_image = CompareImage()
@@ -104,7 +111,7 @@ class game:
     def card(value):
         import time
         adb_return = adb.click(461, 716)
-        time.sleep(1)
+        time.sleep(0.8)
         if value == 1:
             adb_return = adb.click(669, 591)  # 符卡1
         elif value == 2:
@@ -113,7 +120,7 @@ class game:
             adb_return = adb.click(1241, 347)  # 符卡3
         else:
             pass
-        time.sleep(2)
+        time.sleep(1.5)
         return adb_return
 
     def graze(value):
@@ -142,24 +149,27 @@ class game:
 
     def skill(value):
         adb_return = adb.click(2182, 806)
-        if value == 1.1:
-            adb_return = adb.click()
-        elif value == 1.2:
-            adb_return = adb.click()
-        elif value == 1.3:
-            adb_return = adb.click()
-        elif value == 2.1:
-            adb_return = adb.click()
-        elif value == 2.2:
-            adb_return = adb.click()
-        elif value == 2.3:
-            adb_return = adb.click()
-        elif value == 3.1:
-            adb_return = adb.click()
-        elif value == 3.2:
-            adb_return = adb.click()
-        elif value == 3.3:
-            adb_return = adb.click()
-        else:
-            pass
+        for i in range(0, len(value)):
+            if value[i] == 1.1:
+                adb_return = adb.click(657, 891)
+            elif value[i] == 1.2:
+                adb_return = adb.click(804, 891)
+            elif value[i] == 1.3:
+                adb_return = adb.click(932, 890)
+            elif value[i] == 2.1:
+                adb_return = adb.click(1155, 886)
+            elif value[i] == 2.2:
+                adb_return = adb.click(1319, 895)
+            elif value[i] == 2.3:
+                adb_return = adb.click(1451, 900)
+            elif value[i] == 3.1:
+                adb_return = adb.click(1690, 895)
+            elif value[i] == 3.2:
+                adb_return = adb.click(1824, 893)
+            elif value[i] == 3.3:
+                adb_return = adb.click(1957, 885)
+            else:
+                pass
+            adb_return = adb.click(1507, 837)
+        adb_return = adb.click(2182, 806)
         return adb_return
