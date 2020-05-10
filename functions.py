@@ -111,7 +111,7 @@ class game:
     def card(value):
         import time
         adb_return = adb.click(461, 716)
-        time.sleep(0.8)
+        time.sleep(0.7)
         if value == 1:
             adb_return = adb.click(669, 591)  # 符卡1
         elif value == 2:
