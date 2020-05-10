@@ -33,11 +33,6 @@ def startjudge(img):  # 选关界面判断
     img = functions.cut_image(781, 830, 1006, 1248, img)
     x = functions.compare_image(img, FIGHT)
     if x >= 0.8:
-        print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
-        functions.adb.click(1669, 274)  # 选关操作
-        # 选关程序待写
-        # functions.adb.order('adb shell input swipe 1432 730  1428 256 500')
-        # time.sleep(1)
         startevent.set()
     else:
         startevent.clear()
@@ -49,7 +44,6 @@ def gojudge(img):  # 开始界面判断
     img = functions.cut_image(742, 831, 1473, 1747, img)
     x = functions.compare_image(img, GO)
     if x >= 0.8:
-        functions.adb.click(1892, 940)  # 出发操作
         goevent.set()
     else:
         goevent.clear()
@@ -145,6 +139,16 @@ def action():
     back.setDaemon(True)
     back.start()
     while True:
+        print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+
+        startevent.wait()
+        functions.adb.click(1669, 274)  # 选关操作,选关程序待写
+        # functions.adb.order('adb shell input swipe 1432 730  1428 256 500')
+        # time.sleep(1)
+
+        goevent.wait()
+        functions.adb.click(1892, 940)  # 出发操作
+
         fightevent.wait()
         if fullevent.is_set():
             print("WAVE 1")
@@ -156,6 +160,7 @@ def action():
             functions.game.graze(1)
             functions.game.boost(1)
             functions.game.card(2)
+
         fightevent.wait()
         if True:
             print("WAVE 2")
@@ -167,6 +172,7 @@ def action():
             functions.game.card(1)
             functions.game.graze(1)
             functions.game.card(1)
+
         fightevent.wait()
         if boostevent.is_set():
             print("WAVE 3")
@@ -181,6 +187,7 @@ def action():
             functions.adb.click(500, 500)
             functions.adb.click(500, 500)
             continue
+        
         while True:
             fightevent.wait()
             if endevent.is_set():
