@@ -1,6 +1,7 @@
-import functions
-import fight
 import time
+
+# import fight
+import functions
 
 functions.adb.order('adb devices')
 # 解锁

@@ -1,5 +1,8 @@
 # -*- coding:utf-8 -*-
-def mathc_img(image, target, value):  # 图像匹配
+
+
+# 图像匹配
+def mathc_img(image, target, value):
     import cv2
     import numpy as np
     # 加载原始RGB图像
@@ -21,7 +24,7 @@ def mathc_img(image, target, value):  # 图像匹配
     return x, y
 
 
-# 图像裁剪cut_image("screenshot.jpg","test.jpg")
+# 图像裁剪
 def cut_image(y0, y1, x0, x1, path_image1):
     import cv2
     if isinstance(path_image1, str):
@@ -31,7 +34,8 @@ def cut_image(y0, y1, x0, x1, path_image1):
     return cropped
 
 
-def compare_image(path_image1, path_image2):  # 图片比较
+# 图片比较
+def compare_image(path_image1, path_image2):
     from skimage.measure import compare_ssim as ssim
     import cv2
     import warnings
@@ -54,7 +58,8 @@ def compare_image(path_image1, path_image2):  # 图片比较
     # compare_image.compare_image("1.png", "2.png")
 
 
-def screenshot():  # 截图
+# 截图
+def screenshot():
     from PyQt5.QtWidgets import QApplication
     import win32gui
     import sys
@@ -68,6 +73,7 @@ def screenshot():  # 截图
     return img
 
 
+# 图像坐标匹配
 def convertQImageToMat(incomingImage):
     '''  Converts a QImage into an opencv MAT format  '''
     import numpy as np
@@ -82,12 +88,15 @@ def convertQImageToMat(incomingImage):
     return arr
 
 
+# adb命令
 class adb:
-    def order(order):  # adb调用
+    # adb调用
+    def order(order):
         import subprocess
         adb_return = subprocess.Popen(order)
         return adb_return
 
+    # adb点击
     def click(x, y):
         import random
         import time
@@ -98,6 +107,7 @@ class adb:
         return adb_return
 
 
+# adb再封装
 class game:
     def attack(value):
         import time

@@ -10,6 +10,7 @@
         "findstr",
         "format",
         "goevent",
+        "gofind",
         "gojudge",
         "hwnd",
         "img",
@@ -36,6 +37,20 @@
     ],
     "cSpell.words": [
         "dumpsys"
-    ]
-
+    ],
+    "python.testing.unittestArgs": [
+        "-v",
+        "-s",
+        ".",
+        "-p",
+        "test_*.py"
+    ],
+    "python.linting.pylintEnabled": true,
+    "python.testing.pytestEnabled": false,
+    "python.testing.nosetestsEnabled": false,
+    "python.testing.unittestEnabled": false,
+    "python.testing.promptToConfigure": false,
+    "python.linting.flake8Enabled": true,
+    "python.formatting.provider": "yapf",
+    "editor.formatOnSave": true
 }
