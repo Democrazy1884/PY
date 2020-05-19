@@ -103,7 +103,7 @@ class adb:
         x = x + random.randint(-40, 40)
         y = y + random.randint(-20, 20)
         adb_return = adb.order('adb shell input tap %d %d' % (x, y))
-        time.sleep(0.7)
+        time.sleep(0.6)
         return adb_return
 
 
@@ -134,6 +134,8 @@ class game:
             adb_return = adb.click(523, 382)  # 符卡2
         elif value == 3:
             adb_return = adb.click(751, 287)  # 符卡3
+        elif value == 4:
+            adb_return = adb.click(1011, 242)
         else:
             pass
         time.sleep(1.5)

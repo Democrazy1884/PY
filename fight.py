@@ -2,6 +2,7 @@
 import sys
 import threading
 import time
+from group import extra, fightmod
 
 import cv2
 
@@ -32,11 +33,12 @@ OFFLINE = cv2.imread(sys.path[0] + '\\IMG\\offline.jpg')
 FULL = cv2.imread(sys.path[0] + '\\IMG\\full.jpg')
 
 
-def startfind(img):  # 选关界面判断
+def startfind(img):
+    '''选关界面判断'''
     # y0   y1   x0   x1
-    # 791, 835, 737, 969 (1600x900)
+    # 14, 50, 88, 161 (1600x900)
     # 0.878,0.927,0.46,0.6
-    img = functions.cut_image(791, 835, 737, 969, img)
+    img = functions.cut_image(14, 50, 88, 161, img)
     x = functions.compare_image(img, FIGHT)
     if x >= 0.8:
         event.select.start.set()
@@ -45,7 +47,8 @@ def startfind(img):  # 选关界面判断
     # print(x)
 
 
-def gofind(img):  # 开始界面判断
+def gofind(img):
+    '''开始界面判断'''
     # y0   y1   x0   x1
     # 754, 830, 1220, 1465
     #
@@ -59,7 +62,8 @@ def gofind(img):  # 开始界面判断
     # print(x)
 
 
-def boostfind(img):  # 找boost
+def boostfind(img):
+    '''找boost'''
     # y0   y1   x0   x1
     # 753, 790, 1259, 1410
     #
@@ -72,21 +76,23 @@ def boostfind(img):  # 找boost
     # print(x)
 
 
-def endfind(img):  # 结束判断
+def endfind(img):
+    '''结束判断'''
     # y0   y1   x0   x1
     # 158, 216, 690, 907
     #
     img = functions.cut_image(158, 216, 690, 907, img)
     # cv2.imwrite('x.jpg', img)
     x = functions.compare_image(img, END)
-    if x >= 0.7:
+    if x >= 0.5:
         event.fight.end.set()
     else:
         event.fight.end.clear()
     # print(x)
 
 
-def fullfind(img):  # 残血判定
+def fullfind(img):
+    '''残血判定'''
     # y0   y1   x0   x1
     # 140, 150, 529, 534
     #
@@ -99,14 +105,15 @@ def fullfind(img):  # 残血判定
     # print(x)
 
 
-def offlinefind(img):  # 断网判定
+def offlinefind(img):
+    '''断网判定'''
     # y0   y1   x0   x1
     # 390, 485, 626, 960
     #
     img = functions.cut_image(390, 485, 626, 960, img)
     x = functions.compare_image(img, OFFLINE)
     if x >= 0.9:
-        functions.adb.click(1424, 765)  # 断网重连操作
+        functions.adb.click(963, 632)  # 断网重连操作
     # print(x)
 
 
@@ -142,39 +149,43 @@ def backstage():  # 子线程
         time.sleep(1)
 
 
-def actionextra():  # 战斗判断函数
-    time.sleep(8)
+def actionextra(s):
+    '''战斗判断函数'''
+    time.sleep(5)
     event.flag.set()  # 开始子线程
     event.end.wait(timeout=None)  # 等待后台发出开始命令
     event.end.clear()
     event.flag.clear()  # 停止子线程，开始判断
     if event.fight.boost.is_set():  # 有boost
-        if event.fight.full.is_set():  # 满血
+        if event.fight.full.is_set():  # 满血返回1
             return 1
         if not event.fight.full.is_set():  # 残血
-            print('extra')
-            functions.game.attack(2)
-            functions.game.attack(2)
-            functions.game.attack(1)
+            # boss模式残血视为满血继续下一波
+            if s == 'boss':
+                return 1
+            extra(s)
             event.fight.boost.clear()
-            x = actionextra()
+            x = actionextra(s)
             return x
-    if event.fight.end.is_set():  # 结束
+    if event.fight.end.is_set():  # 结束返回0
         return 0
 
 
 def end():
+    '''结束处理'''
     print('end')
     functions.adb.click(500, 500)
     time.sleep(0.5)
     functions.adb.click(500, 500)
+    time.sleep(0.5)
     functions.adb.click(500, 500)
     event.fight.end.clear()
     event.fight.boost.clear()
     event.fight.full.clear()
 
 
-def actionselect(n):  # 选择函数
+def actionselect(n):
+    '''关卡选择函数'''
     event.flag.set()  # 开始子线程
     event.select.start.wait()
     print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
@@ -194,11 +205,18 @@ def actionselect(n):  # 选择函数
 
 
 def go():
+    '''队伍选择'''
     pass
 
 
-def action(n, style):
+def action(n, style, s):
+    """
+    战斗主函数
 
+    n(关卡选择) = 1 2 3
+    style(战斗模式选择) = 1(boss战) 2(秒杀战)
+    s(残血模式选择) =  boss(跳过残血) 1(全集中) 2(全分散) 3(一半集中一半分散)
+    """
     back_stage = threading.Thread(target=backstage, args=())
     back_stage.setDaemon(True)
     back_stage.start()
@@ -209,22 +227,22 @@ def action(n, style):
         event.select.flag.clear()  # 选择事件结束
 
         event.fight.flag.set()  # 战斗事件开始
-        if actionextra():
+        if actionextra(s):
             fight1(style)  # 操作1
         else:
             end()
             continue
-        if actionextra():
+        if actionextra(s):
             fight2(style)  # 操作2
         else:
             end()
             continue
-        if actionextra():
+        if actionextra(s):
             fight3(style)  # 操作3
         else:
             end()
             continue
-        if actionextra():
+        if actionextra(s):
             print('end error')
         else:
             event.fight.flag.clear()  # 战斗事件结束
@@ -232,6 +250,7 @@ def action(n, style):
 
 
 def selection(n):
+    '''选关'''
     #
     #
     #
@@ -241,45 +260,36 @@ def selection(n):
         functions.adb.click(1105, 426)  # 选关2
     elif n == 3:
         functions.adb.click(1105, 612)  # 选关3
-    elif n == 4:
-        functions.adb.order('adb shell input swipe 1105 612  1105 420 2500')
-        time.sleep(1)
-        functions.adb.click(1105, 612)
-    elif n == 5:
-        functions.adb.order('adb shell input swipe 1105 612  1105 420 2500')
-        time.sleep(3)
-        functions.adb.order('adb shell input swipe 1105 612  1105 420 2500')
-        time.sleep(3)
-        functions.adb.click(1105, 612)
-    elif n == 'last':
-        functions.adb.order('adb shell input swipe 1105 612  1105 256 2500')
-        time.sleep(0.5)
-        functions.adb.order('adb shell input swipe 1105 612  1105 256 2500')
-        functions.adb.click(1105, 682)
 
 
 # 第一波战斗
 def fight1(style):
     print("WAVE 1")
     if style == 1:
-        functions.game.skill([2.2])
-        functions.game.card(1)
-        functions.game.card(1)
+        fightmod.mod1.fight1()
+    if style == 2:
+        fightmod.mod2.fight1()
+    if style == 3:
+        fightmod.mod3.fight1()
 
 
 # 第二波战斗
 def fight2(style):
     print("WAVE 2")
     if style == 1:
-        functions.game.skill([2.1])
-        functions.game.card(3)
-        functions.game.card(2)
+        fightmod.mod1.fight2()
+    if style == 2:
+        fightmod.mod2.fight2()
+    if style == 3:
+        fightmod.mod3.fight2()
 
 
 # 第三波战斗
 def fight3(style):
     print("WAVE 3")
     if style == 1:
-        functions.game.attack(1)
-        functions.game.boost(2)
-        functions.game.card(3)
+        fightmod.mod1.fight3()
+    if style == 2:
+        fightmod.mod2.fight3()
+    if style == 3:
+        fightmod.mod3.fight3()
