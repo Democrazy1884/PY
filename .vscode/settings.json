@@ -33,7 +33,9 @@
         "touhoulo",
         "touhoulostword",
         "uint",
-        "yapf"
+        "xtransform",
+        "yapf",
+        "ytransform"
     ],
     "cSpell.words": [
         "dumpsys"

@@ -1,15 +1,13 @@
 # -*- coding:utf-8 -*-
 from fight import action, selection, endfind
-import functions
+from img import cut_image, screenshot
 import cv2
 import time
 if 1:
-    img = functions.screenshot()
+    img = screenshot()
     cv2.imwrite('1.jpg', img)
 if 0:
-    img = cv2.imread('1.jpg')
+    img = cv2.imread('2.jpg')
 if 1:
-    img1 = functions.cut_image(14, 50, 88, 161, img)
+    img1 = cut_image(790, 815, 723, 743, img)
     cv2.imwrite('z.jpg', img1)
-    img = functions.screenshot()
-    cv2.imwrite('1.jpg', img)
