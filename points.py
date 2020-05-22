@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 def transform(p, screen):
     if isinstance(p, float):
         return int(p * screen)
@@ -15,24 +16,25 @@ def ytransform(y, screen=900):
     return transform(y, screen)
 
 
-_boost_ = (1335, 725)
-_attack_1 = (391, 724)
-_attack_2 = (932, 724)
-
-
-class x:
-    _value_ = 0
-    boost = _boost_[_value_]
-    attack1 = _attack_1[_value_]
-    attack2 = _attack_2[_value_]
-
-
-class y:
-    _value_ = 1
-    boost = _boost_[_value_]
-    attack1 = _attack_1[_value_]
-    attack2 = _attack_2[_value_]
-
-
-if __name__ == "__main__":
-    print(x.boost, y.boost)
+# adb.py需要的坐标
+boost = (1335, 725)
+attack_1 = (391, 724)
+attack_2 = (932, 724)
+card_c = (79, 593)
+card_1 = (280, 491)
+card_2 = (523, 382)
+card_3 = (751, 287)
+card_4 = (1011, 242)
+card_5 = (1264, 243)
+graze = (1435, 504)
+skill_c = (1524, 671)
+skill_11 = (242, 741)
+skill_12 = (368, 741)
+skill_13 = (748, 741)
+skill_21 = (687, 741)
+skill_22 = (807, 741)
+skill_23 = (933, 741)
+skill_31 = (1124, 741)
+skill_32 = (1232, 741)
+skill_33 = (1359, 741)
+skill_y = (967, 701)

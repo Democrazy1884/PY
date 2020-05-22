@@ -2,7 +2,7 @@
 import sys
 import threading
 import time
-from group import extra, fightmod, unexpected
+from group import extra, fightmod
 
 import cv2
 
@@ -30,6 +30,7 @@ class event:
 BOOST = cv2.imread(sys.path[0] + '\\IMG\\boost.jpg')
 END = cv2.imread(sys.path[0] + '\\IMG\\end.jpg')
 FIGHT = cv2.imread(sys.path[0] + '\\IMG\\fight.jpg')
+FIGHT1 = cv2.imread(sys.path[0] + '\\IMG\\fight1.jpg')
 GO = cv2.imread(sys.path[0] + '\\IMG\\go.jpg')
 OFFLINE = cv2.imread(sys.path[0] + '\\IMG\\offline.jpg')
 FULL = cv2.imread(sys.path[0] + '\\IMG\\full.jpg')
@@ -39,6 +40,7 @@ NUMBER3 = cv2.imread(sys.path[0] + '\\IMG\\3.jpg')
 NUMBER4 = cv2.imread(sys.path[0] + '\\IMG\\4.jpg')
 NUMBER5 = cv2.imread(sys.path[0] + '\\IMG\\5.jpg')
 img = None
+STEP = 0.2
 
 
 def startfind(img):
@@ -47,10 +49,16 @@ def startfind(img):
     # 14, 50, 88, 161
     img = cut_image(14, 50, 88, 161, img)
     x = compare_image(img, FIGHT)
+    x1 = compare_image(img, FIGHT1)
     if x >= 0.8:
         event.select.start.set()
+        return True
+    elif x1 >= 0.8:
+        event.select.start.set()
+        return True
     else:
         event.select.start.clear()
+        return False
     # print(x)
 
 
@@ -64,8 +72,10 @@ def gofind(img):
     x = compare_image(img, GO)
     if x >= 0.8:
         event.select.go.set()
+        return True
     else:
         event.select.go.clear()
+        return False
     # print(x)
 
 
@@ -78,8 +88,10 @@ def boostfind(img):
     x = compare_image(img, BOOST)
     if x >= 0.7:  # boost 找到了
         event.fight.boost.set()
+        return True
     else:
         event.fight.boost.clear()
+        return False
     # print(x)
 
 
@@ -93,8 +105,10 @@ def endfind(img):
     x = compare_image(img, END)
     if x >= 0.5:
         event.fight.end.set()
+        return True
     else:
         event.fight.end.clear()
+        return False
     # print(x)
 
 
@@ -107,8 +121,10 @@ def fullfind(img):
     x = compare_image(img, FULL)
     if x >= 0.8:
         event.fight.full.set()
+        return True
     else:
         event.fight.full.clear()
+        return False
     # print(x)
 
 
@@ -121,7 +137,8 @@ def offlinefind(img):
     x = compare_image(img, OFFLINE)
     if x >= 0.9:
         click(963, 632)  # 断网重连操作
-    # print(x)
+        time.sleep(10)
+        offlinefind(img)
 
 
 def backstage():  # 子线程
@@ -154,14 +171,14 @@ def backstage():  # 子线程
                 event.end.set()
             else:
                 event.end.clear()
-        time.sleep(1)
+        time.sleep(0.2)
         if event.stop.is_set():
             break
 
 
 def actionextra(s):
     '''战斗判断函数'''
-    time.sleep(5)
+    time.sleep(3)
     event.flag.set()  # 开始子线程
     event.end.wait(timeout=None)  # 等待后台发出开始命令
     event.end.clear()
@@ -183,12 +200,13 @@ def actionextra(s):
 
 def end():
     '''结束处理'''
-    print('end')
+    # print('end')
     click(500, 500)
     time.sleep(0.5)
     click(500, 500)
     time.sleep(0.5)
     click(500, 500)
+    event.fight.flag.clear()  # 战斗事件结束
     event.fight.end.clear()
     event.fight.boost.clear()
     event.fight.full.clear()
@@ -204,20 +222,14 @@ def actionselect(n, team):
 
     event.select.go.wait()
 
-    # 队伍选择
+    # 队伍选择点出发
     go(team)
 
-    #
-    #
-    #
-    click(1338, 796)  # 出发操作
     event.flag.clear()  # 结束子线程
 
 
 def go(team):
     '''队伍选择'''
-    if team == 0:
-        return
     # 判断当前队伍 计算距目标的距离
     while True:
         pic = cut_image(790, 815, 723, 743, img)
@@ -240,6 +252,7 @@ def go(team):
         if not isinstance(value, int):
             continue
         if value == 0:
+            click(1338, 796)
             return
         if value > 0:
             click(58, 534)
@@ -258,19 +271,25 @@ def substop():
     event.stop.set()
 
 
-def action(n, style, s, team=0):
+def action(n, style, s, team=0, tim=30):
     """
     战斗主函数
 
     n(关卡选择) = 1 2 3
-    style(战斗模式选择) = 1(boss战) 2(秒杀战)
+
+    style(战斗模式选择) = 1() 2(妖梦刷文文) 3(魔理沙单刷铃仙) 4(妖梦单刷铃仙) 5(HARD符卡一回合 卡2) 6(HARD符卡一回合 卡1)
+
     s(残血模式选择) =  boss(跳过残血) 1(全集中) 2(全分散) 3(一半集中一半分散) 4(有什么符卡放什么)
+
     team(队伍选择)
+
+    tim(运行时间min)
+
     """
     start = time.time()  # 开始计时
     while True:
         stop = time.time()  # 结束计时
-        if stop - start > 60 * 30:
+        if stop - start > 60 * tim:
             print('break')
             break
 
@@ -287,19 +306,24 @@ def action(n, style, s, team=0):
         if actionextra(s):
             fight2(style)  # 操作2
         else:
+            print("WAVE 1")
             end()
             continue
         if actionextra(s):
             fight3(style)  # 操作3
         else:
+            print("WAVE 2")
             end()
             continue
         if actionextra(s):
-            unexpected()
+            actionextra(4)
             print('end error')
-        else:
-            event.fight.flag.clear()  # 战斗事件结束
             end()
+            continue
+        else:
+            print("WAVE 3")
+            end()
+            continue
 
 
 def selection(n):
@@ -315,37 +339,36 @@ def selection(n):
         click(1105, 612)  # 选关3
 
 
+# 战斗选择字典
+d = {
+    1: fightmod.mod1,
+    2: fightmod.mod2,
+    3: fightmod.mod3,
+    4: fightmod.mod4,
+    5: fightmod.mod5,
+    6: fightmod.mod6,
+    7: fightmod.mod7,
+    8: fightmod.mod8,
+    9: fightmod.mod9,
+}
+
+
 # 第一波战斗
 def fight1(style):
-    print("WAVE 1")
-    if style == 1:
-        fightmod.mod1.fight1()
-    if style == 2:
-        fightmod.mod2.fight1()
-    if style == 3:
-        fightmod.mod3.fight1()
+    # print("WAVE 1")
+    d[style].fight1()
 
 
 # 第二波战斗
 def fight2(style):
-    print("WAVE 2")
-    if style == 1:
-        fightmod.mod1.fight2()
-    if style == 2:
-        fightmod.mod2.fight2()
-    if style == 3:
-        fightmod.mod3.fight2()
+    # print("WAVE 2")
+    d[style].fight2()
 
 
 # 第三波战斗
 def fight3(style):
-    print("WAVE 3")
-    if style == 1:
-        fightmod.mod1.fight3()
-    if style == 2:
-        fightmod.mod2.fight3()
-    if style == 3:
-        fightmod.mod3.fight3()
+    # print("WAVE 3")
+    d[style].fight3()
 
 
 if __name__ == "__main__":
