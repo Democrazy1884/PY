@@ -6,11 +6,17 @@ def mathc_img(image, target, value):
     import cv2
     import numpy as np
     # 加载原始RGB图像
-    img_rgb = cv2.imread(image)
+    if isinstance(image, str):
+        img_rgb = cv2.imread(image)
+    else:
+        img_rgb = image
     # 创建一个原始图像的灰度版本，所有操作在灰度版本中处理，然后在RGB图像中使用相同坐标还原
     img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
     # 加载将要搜索的图像模板
-    template = cv2.imread(target, 0)
+    if isinstance(image, str):
+        template = cv2.imread(target, 0)
+    else:
+        template = target
     # 记录图像模板的尺寸
     w, h = template.shape[::-1]
     # 使用matchTemplate对原始灰度图像和图像模板进行匹配
@@ -74,7 +80,6 @@ def screenshot():
 
 
 def convertQImageToMat(incomingImage):
-    '''图像坐标匹配'''
     '''  Converts a QImage into an opencv MAT format  '''
     import numpy as np
     incomingImage = incomingImage.convertToFormat(4)

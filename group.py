@@ -44,6 +44,9 @@ class fightmod:
         def fight2():
             pass
 
+        def fight3():
+            pass
+
     class mod2:
         '''模式2 妖梦刷文文'''
         def fight1():
@@ -53,9 +56,11 @@ class fightmod:
             card(5)
 
         def fight2():
+            boost(1)
             attack(2)
 
         def fight3():
+            boost(1)
             attack(2)
 
     class mod3:

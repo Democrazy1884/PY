@@ -1,12 +1,20 @@
 # -*- coding:utf-8 -*-
 import points as p
-import time
+from time import sleep
 
 
 # adb调用
 def order(orders):
+    '''adb调用'''
     import subprocess
-    subprocess.Popen(orders)
+    return subprocess.Popen(orders)
+
+
+def screencap(string):
+    '''截图'''
+    order('adb shell screencap -p /storage/emulated/0/Pictures/' + string)
+    sleep(1)
+    order('adb pull /storage/emulated/0/Pictures/' + string)
 
 
 def click(x, y):
@@ -15,7 +23,7 @@ def click(x, y):
     x = x + random.randint(-40, 40)
     y = y + random.randint(-20, 20)
     order('adb shell input tap %d %d' % (x, y))
-    time.sleep(0.5)
+    sleep(0.5)
 
 
 def attack(value):
@@ -27,7 +35,7 @@ def attack(value):
 
 def card(value):
     click(p.card_c[0], p.card_c[1])
-    time.sleep(0.4)
+    sleep(0.4)
     if value == 1:
         click(p.card_1[0], p.card_1[1])  # 符卡1
     elif value == 2:
@@ -38,7 +46,7 @@ def card(value):
         click(p.card_4[0], p.card_4[1])  # 符卡4
     elif value == 5:
         click(p.card_5[0], p.card_5[1])
-    time.sleep(1.4)
+    sleep(1.4)
 
 
 def graze(value):
