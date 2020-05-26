@@ -30,6 +30,9 @@ def unexpected():
     graze(1)
     boost(1)
     card(4)
+    card(3)
+    card(2)
+    card(1)
     click(79, 593)
     attack(2)
 
@@ -37,15 +40,20 @@ def unexpected():
 class fightmod:
     '''战斗操作组'''
     class mod1:
-        '''模式1 魔理沙刷文文'''
+        '''模式1 妖梦刷L15'''
         def fight1():
-            pass
+            skill([1.2])
+            boost(1)
+            card(2)
 
         def fight2():
-            pass
+            boost(1)
+            card(4)
 
         def fight3():
-            pass
+            boost(1)
+            skill([1.1])
+            card(5)
 
     class mod2:
         '''模式2 妖梦刷文文'''

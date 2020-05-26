@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 import points as p
 from time import sleep
+import cv2
 
 
 # adb调用
@@ -15,6 +16,7 @@ def screencap(string):
     order('adb shell screencap -p /storage/emulated/0/Pictures/' + string)
     sleep(1)
     order('adb pull /storage/emulated/0/Pictures/' + string)
+    return cv2.imread(string)
 
 
 def click(x, y):
@@ -24,6 +26,10 @@ def click(x, y):
     y = y + random.randint(-20, 20)
     order('adb shell input tap %d %d' % (x, y))
     sleep(0.5)
+
+
+def swipe(x1, y1, x2, y2, tim):
+    order('adb shell input swipe %d %d %d %d %d' % (x1, y1, x2, y2, tim))
 
 
 def attack(value):

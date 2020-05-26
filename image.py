@@ -1,6 +1,19 @@
 # -*- coding:utf-8 -*-
 
 
+import time
+
+
+def clock(func):
+    def clocked(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        print(func.__name__, end - start)
+        return result
+    return clocked
+
+
 def mathc_img(image, target, value):
     '''图像匹配'''
     import cv2
@@ -13,10 +26,11 @@ def mathc_img(image, target, value):
     # 创建一个原始图像的灰度版本，所有操作在灰度版本中处理，然后在RGB图像中使用相同坐标还原
     img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
     # 加载将要搜索的图像模板
-    if isinstance(image, str):
+    if isinstance(target, str):
         template = cv2.imread(target, 0)
     else:
         template = target
+    # template = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
     # 记录图像模板的尺寸
     w, h = template.shape[::-1]
     # 使用matchTemplate对原始灰度图像和图像模板进行匹配
@@ -24,8 +38,10 @@ def mathc_img(image, target, value):
     # 设定阈值
     threshold = value
     loc = np.where(res >= threshold)
-    x = loc[1][0] + (w // 2)
-    y = loc[0][0] + (h // 2)
+    x = loc[1] + (w // 2)
+    y = loc[0] + (h // 2)
+    x = list(x)
+    y = list(y)
     # print(x, y)
     return x, y
 
@@ -64,6 +80,7 @@ def compare_image(path_image1, path_image2):
     # compare_image.compare_image("1.png", "2.png")
 
 
+# @clock
 def screenshot():
     '''截图'''
     from PyQt5.QtWidgets import QApplication
@@ -91,3 +108,15 @@ def convertQImageToMat(incomingImage):
     ptr.setsize(incomingImage.byteCount())
     arr = np.array(ptr).reshape(height, width, 4)  # Copies the data
     return arr
+
+
+if __name__ == "__main__":
+    import cv2
+    import keyboard
+
+    while True:
+        # keyboard.wait('ctrl+alt+a')
+        keyboard.wait('a')
+        cv2.imwrite('x.jpg', screenshot())
+        print('screenshot')
+        time.sleep(1)

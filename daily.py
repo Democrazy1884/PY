@@ -1,36 +1,40 @@
-from img import compare_image, cut_image
+from adb import swipe, click
+from time import sleep
+from image import compare_image, cut_image, mathc_img
 import cv2
 import sys
-from fight import img
+from fight import offlinefind, img, substart, substop, event
 
 img
-FIRST = cv2.imread(sys.path[0] + '\\IMG\\first.jpg')
-MAIN = cv2.imread(sys.path[0] + '\\IMG\\main.jpg')
 
 
 # # # # # # # # # # # # # # # # # # # # #  判断函数  # # # # # # # # # # # # # # # # # # #
 
 
-def firstpagefind(img):
-    '''初始界面判断'''
-    x = compare_image(img, FIRST)
-    if x > 0.8:
-        return True
-    else:
-        return False
-
-
-def mainpagefind(img):
-    '''主界面判断'''
-    x = compare_image(img, MAIN)
-    if x > 0.8:
-        return True
-    else:
-        return False
-
-
-def spotfind(img):
-    '''主界面红点判断'''
-    img = cut_image()
-
 # # # # # # # # # # # # # # # # # # # # #  行动函数  # # # # # # # # # # # # # # # # # # #
+
+
+
+substart()
+event.done.wait()
+cv2.imwrite('x.jpg', img)
+
+if mainpage_marchfind(img):
+    click(1390, 537)
+    while True:
+        offlinefind(img)
+        if marchfind(img):
+            m_list = March.start(img)
+            break
+    click(75, 184)
+    swipe(1560, 615, 1557, 261, 200)
+    waiting = []
+    doing = []
+    done = []
+    for n in range(0, len(m_list)):
+        if m_list[n].situation == 'waiting':
+            waiting.append(n)
+        elif m_list[n].situation == 'doing':
+            doing.append(n)
+        elif m_list[n].situation == 'done':
+            done.append(n)
