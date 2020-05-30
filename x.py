@@ -5,11 +5,11 @@ import cv2
 import time
 
 
-if 1:
+if 0:
     img = screenshot()
     cv2.imwrite('1.jpg', img)
-if 0:
+if 1:
     img = cv2.imread('1.jpg')
 if 1:
-    img1 = cut_image(13, 48, 89, 231, img)
-    cv2.imwrite('z.jpg', img1)
+    img = cut_image(708, 731, 1324, 1348, img)
+    cv2.imwrite('z.jpg', img)

@@ -14,7 +14,7 @@ def clock(func):
     return clocked
 
 
-def mathc_img(image, target, value):
+def mathc_img(image, target, value=0.8):
     '''图像匹配'''
     import cv2
     import numpy as np

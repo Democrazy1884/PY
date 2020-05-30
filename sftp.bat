@@ -1,1 +1,0 @@
-python .\sftp.py

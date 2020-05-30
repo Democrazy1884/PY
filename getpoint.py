@@ -30,7 +30,6 @@ while True:
     # BGR转化为HSV
     HSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     # 鼠标点击响应事件
-
     # cv2.imshow("imageHSV",HSV)
     cv2.imshow('image', img)
     cv2.setMouseCallback("image", getposBgr)
