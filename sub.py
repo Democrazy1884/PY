@@ -32,6 +32,7 @@ def substart():
 
 
 def get_img():
+    '''读取图像'''
     event.done.wait()
     return img
 

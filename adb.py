@@ -23,23 +23,24 @@ def screencap(string):
     return cv2.imread(string)
 
 
-def click(x, y):
+def click(x, y, tim=0.5):
     '''点击'''
     import random
     x = x + random.randint(-20, 20)
     y = y + random.randint(-20, 20)
     order('adb shell input tap %d %d' % (x, y))
-    sleep(0.5)
+    sleep(tim)
 
 
-def click_s(x, y):
+def click_s(x, y, tim=0.5):
     '''精确点击'''
     order('adb shell input tap %d %d' % (x, y))
-    sleep(0.5)
+    sleep(tim)
 
 
 def swipe(x1, y1, x2, y2, tim):
-    order('adb shell input swipe %d %d %d %d %d' % (x1, y1, x2, y2, tim))
+    order('adb shell input touchscreen swipe %d %d %d %d %d' %
+          (x1, y1, x2, y2, tim))
 
 
 def attack(value):
@@ -50,8 +51,7 @@ def attack(value):
 
 
 def card(value):
-    click(p.card_c[0], p.card_c[1])
-    sleep(0.4)
+    click(p.card_c[0], p.card_c[1], 1)
     if value == 1:
         click(p.card_1[0], p.card_1[1])  # 符卡1
     elif value == 2:
@@ -81,6 +81,7 @@ THREE = cv2.imread(sys.path[0] + '\\IMG\\three.jpg')
 
 
 def boost(value, get_img=get_img):
+    sleep(0.5)
     img = cut_image(708, 731, 1324, 1348, get_img())
     # 当前拥有的p点
     possibility = []
@@ -106,9 +107,6 @@ def boost(value, get_img=get_img):
 
 
 def skill(value):
-    #
-    #
-    #
     if isinstance(value, int):
         value = [value]
     click(1524, 671)
@@ -136,3 +134,9 @@ def skill(value):
             return
         click(967, 701)
     click(1524, 671)
+
+
+if __name__ == "__main__":
+    while True:
+        click(878, 590)
+        click(976, 720)

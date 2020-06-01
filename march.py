@@ -6,7 +6,7 @@ import cv2
 from adb import click, swipe, click_s
 from image import compare_image, cut_image, mathc_img
 from sub import get_img
-
+from gameerror import OvertimeError
 LV = cv2.imread(sys.path[0] + '\\IMG\\lv.jpg', 0)  # 远征检测
 MARCHPAGE = cv2.imread(sys.path[0] + '\\IMG\\marchpage.jpg')
 DONE = cv2.imread(sys.path[0] + '\\IMG\\done.jpg', 0)  # 远征完成
@@ -241,18 +241,22 @@ class March():
 
     def receive_done_sub(get_img=get_img):
         '''收远征完成'''
-        sleep(3)
+        sleep(1)
         for num in range(0, 3):
-            # 找到完成的远征
+            # 找完成的远征
             x, y = mathc_img(get_img(), DONE, 0.9)
             x, y = March.remove_same(x, y)
+            # 找到可以收的远征
             if x:
                 click(x[0], y[0])
                 x = []
                 y = []
                 sleep(1)
                 # 找MARCHDONE
+                start = time()
                 while True:
+                    if time() - start > 60:
+                        raise OvertimeError('receive1')
                     x, y = mathc_img(get_img(), MARCHDONE, 0.9)
                     if x:
                         x = []
@@ -260,17 +264,22 @@ class March():
                         break
                     sleep(STEP * 2)
                 # 在回到远征界面前一直点
+                start = time()
                 while True:
-                    click(792, 818)
-                    sleep(1)
+                    if time() - start > 60:
+                        raise OvertimeError('receive2')
                     if marchfind():
                         break
+                    click(792, 818)
+                    sleep(2)
             else:
+                # 没远征可收
                 print('Nope')
                 return
 
     def receive_done_main():
         '''收远征'''
+        sleep(5)
         March.receive_done_sub()
         March.down_swipe()
         March.receive_done_sub()
@@ -283,7 +292,10 @@ class March():
         '''进入远征界面'''
         click(1387, 543)
         sleep(3)
+        start = time()
         while True:
+            if time() - start > 60:
+                raise OvertimeError('go')
             marchfind()
             offlinefind()
             if marchfind():
@@ -295,6 +307,8 @@ class March():
         click_s(1559, 35)
         start = time()
         while True:
+            if time() - start > 60:
+                raise OvertimeError('exit')
             offlinefind()
             if mainpagefind():
                 break
@@ -305,14 +319,20 @@ class March():
 
     def select_player():
         # 选人
+        start = time()
         while True:
+            if time() - start > 60:
+                raise OvertimeError('select_player1')
             x, y = mathc_img(get_img(), ADDGIRL, 0.8)
             x, y = March.remove_same(x, y)
             if x:
                 click(x[0], y[0])
                 break
         # 确定
+        start = time()
         while True:
+            if time() - start > 60:
+                raise OvertimeError('select_player2')
             x, y = mathc_img(get_img(), YES, 0.8)
             x, y = March.remove_same(x, y)
             if x:
@@ -392,15 +412,22 @@ class March():
 
     def start():
         '''远征全家桶'''
-        March.exit()
-        # 收远征
-        March.receive()
-        # 初始化
-        march_list = March.initialize()
-        # 远征优先级
-        modelist = ['gold2', 'gold1', 'power', 'card', 'book', 'nothing']
-        # 做远征
-        March.send(march_list, modelist)
-        March.exit()
-        click(1472, 717)
-        sleep(3)
+        try:
+            print('march start')
+            March.exit()
+            # 收远征
+            March.receive()
+            # 初始化
+            march_list = March.initialize()
+            # 远征优先级
+            modelist = ['gold2', 'gold1', 'power', 'card', 'book', 'nothing']
+            # 做远征
+            March.send(march_list, modelist)
+            print('march done')
+            March.exit()
+
+            click(1472, 717)
+            sleep(3)
+        except OvertimeError as err:
+            print(err.type)
+            March.start()

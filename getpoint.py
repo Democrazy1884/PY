@@ -22,7 +22,7 @@ def getposBgr(event, x, y, flags, param):
 while True:
     #   读 取 图 片
     img = screenshot()  # 直接读为灰度图像
-    cv2.imwrite('x.jpg', img)
+    cv2.imwrite('D:\\PY\\x.jpg', img)
     #   缩小图像10倍(因为我的图片太大，所以要缩小10倍方便显示)
     height, width = img.shape[:2]
     size = (width//2, height//2)  # bgr

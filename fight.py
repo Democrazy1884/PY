@@ -424,20 +424,19 @@ def action(stage, team, normal, tim=30):
     sleep(3)
     start = int(time())  # 开始计时
     fightway = d1[normal][0].mode()
+    print(fightway)
     if fightway == 'boss':
         fightway = boss
     if fightway == 'wave3':
         fightway = wave3
-    print(fightway)
     while True:
         stop = int(time())  # 结束计时
         if stop - start > 60 * tim:
-            print('break at ' + strftime("%H:%M:%S", localtime()))
+            print('break at %s ' % strftime("%H:%M:%S", localtime()))
             sleep(3)
             return stop - start
         try:
-            print('start at ' + strftime("%H:%M:%S", localtime()))
-            # print(strftime("%H:%M:%S", localtime()))
+            print('start at %s ' % strftime("%H:%M:%S", localtime()), end='')
             select_stage(stage)  # 选关
             # print('team')
             select_team(team)  # 选队伍
@@ -456,11 +455,14 @@ def action(stage, team, normal, tim=30):
 
 
 class Fight():
-    def __init__(self):
-        self.time
+    def __init__(self, stage: int, team: int, fightway, normal: int, tim=30):
+        self.stage = stage
+        self.team = team
+        self.normal = normal
+        self.tim = tim
 
-    def run(self: int, stage: int, team: int, fightway, normal: int, tim=30):
-        action(stage, team, fightway, normal, tim)
+    def run(self):
+        action(self.stage, self.team, self.normal, self.tim)
 
 
 if __name__ == "__main__":
