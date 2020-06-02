@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-from adb import attack, graze, boost, skill, card, click
+from adb import attack, boost, card, click, graze, skill
 
 
 def extra(s):
@@ -36,12 +36,22 @@ def extra(s):
         return s()
 
 
+wave3 = 'wave3'
+boss = 'boss'
+default = 'default'
+
+
 class fightmod:
-    '''战斗操作组'''
+    '''战斗操作类'''
+
     class mod1:
         '''模式1 妖梦刷L15'''
+
         def mode():
             return 'wave3'
+
+        def stage():
+            return default
 
         def fight1():
             skill([1.2])
@@ -65,15 +75,16 @@ class fightmod:
         def mode():
             return 'boss'
 
+        def stage():
+            return default
+
         def fight1():
             card(2)
-            return fightmod.mod2.extra
 
         def fight2():
             skill([1.2])
             graze(1)
             card(4)
-            return fightmod.mod2.extra
 
         def fight3():
             boost(2)
@@ -98,6 +109,9 @@ class fightmod:
         '''模式3 八云蓝打L铃仙'''
         def mode():
             return 'boss'
+
+        def stage():
+            return default
 
         def fight1():
             skill([1.2])
@@ -131,6 +145,9 @@ class fightmod:
         def mode():
             return ''
 
+        def stage():
+            return default
+
         def fight1():
             pass
 
@@ -144,6 +161,9 @@ class fightmod:
         '''模式5 '''
         def mode():
             return 'boss'
+
+        def stage():
+            return default
 
         def fight1():
             pass
@@ -159,6 +179,9 @@ class fightmod:
         def mode():
             return 'boss'
 
+        def stage():
+            return default
+
         def fight1():
             pass
 
@@ -172,6 +195,9 @@ class fightmod:
         '''魔理沙打L15'''
         def mode():
             return 'wave3'
+
+        def stage():
+            return default
 
         def fight1():
             skill([1.2])

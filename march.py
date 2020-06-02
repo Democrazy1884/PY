@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 import sys
 from time import sleep, time
-
+import game_log
 import cv2
 from adb import click, swipe, click_s
 from image import compare_image, cut_image, mathc_img
@@ -37,7 +37,7 @@ def offlinefind(get_img=get_img):
     x = compare_image(img, OFFLINE)
     if x >= 0.9:
         click(963, 632)  # 断网重连操作
-        print('offline')
+        game_log.warning('offline')
         sleep(10)
         return True
     return False
@@ -274,7 +274,7 @@ class March():
                     sleep(2)
             else:
                 # 没远征可收
-                print('Nope')
+                game_log.info('Nope')
                 return
 
     def receive_done_main():
@@ -413,8 +413,14 @@ class March():
     def start():
         '''远征全家桶'''
         try:
-            print('march start')
+            game_log.info('march start')
             March.exit()
+            if not mainpage_marchfind():
+                game_log.info('no march is done')
+                March.exit()
+                click(1472, 717)
+                sleep(3)
+                return
             # 收远征
             March.receive()
             # 初始化
@@ -423,11 +429,11 @@ class March():
             modelist = ['gold2', 'gold1', 'power', 'card', 'book', 'nothing']
             # 做远征
             March.send(march_list, modelist)
-            print('march done')
+            game_log.info('march done')
             March.exit()
 
             click(1472, 717)
             sleep(3)
         except OvertimeError as err:
-            print(err.type)
+            game_log.error(err.type)
             March.start()

@@ -4,9 +4,7 @@ from time import sleep
 import cv2
 import sys
 from sub import get_img
-from image import cut_image,  compare_image
-
-# adb调用
+from image import cut_image, compare_image
 
 
 def order(orders):
@@ -138,5 +136,6 @@ def skill(value):
 
 if __name__ == "__main__":
     while True:
-        click(878, 590)
+        click(604, 614)
+        sleep(1)
         click(976, 720)

@@ -1,27 +1,31 @@
 # -*- coding:utf-8 -*-
 import os
 import sys
+from time import sleep, time
 
-from time import localtime, sleep, strftime, time
-from gameerror import OvertimeError
 import cv2
-from sub import get_img
+
+import game_log
 from adb import click  # , swipe
+from gameerror import OvertimeError
 from group import extra, fightmod
 from image import compare_image, cut_image, mathc_img
-BOOST = cv2.imread(sys.path[0] + '\\IMG\\boost.jpg')  # 战斗判断用 boost
-END = cv2.imread(sys.path[0] + '\\IMG\\end.jpg')  # 战斗结束
-FIGHT = cv2.imread(sys.path[0] + '\\IMG\\fight.jpg')
-FIGHT1 = cv2.imread(sys.path[0] + '\\IMG\\fight1.jpg')
-GO = cv2.imread(sys.path[0] + '\\IMG\\go.jpg')
-OFFLINE = cv2.imread(sys.path[0] + '\\IMG\\offline.jpg')
-FULL = cv2.imread(sys.path[0] + '\\IMG\\full.jpg')
-NUMBER1 = cv2.imread(sys.path[0] + '\\IMG\\1.jpg')
-NUMBER2 = cv2.imread(sys.path[0] + '\\IMG\\2.jpg')
-NUMBER3 = cv2.imread(sys.path[0] + '\\IMG\\3.jpg')
-NUMBER4 = cv2.imread(sys.path[0] + '\\IMG\\4.jpg')
-NUMBER5 = cv2.imread(sys.path[0] + '\\IMG\\5.jpg')
+from sub import get_img
+
+BOOST = cv2.imread(sys.path[0] + "\\IMG\\boost.jpg")  # 战斗判断用 boost
+END = cv2.imread(sys.path[0] + "\\IMG\\end.jpg")  # 战斗结束
+FIGHT = cv2.imread(sys.path[0] + "\\IMG\\fight.jpg")
+FIGHT1 = cv2.imread(sys.path[0] + "\\IMG\\fight1.jpg")
+GO = cv2.imread(sys.path[0] + "\\IMG\\go.jpg")
+OFFLINE = cv2.imread(sys.path[0] + "\\IMG\\offline.jpg")
+FULL = cv2.imread(sys.path[0] + "\\IMG\\full.jpg")
+NUMBER1 = cv2.imread(sys.path[0] + "\\IMG\\1.jpg")
+NUMBER2 = cv2.imread(sys.path[0] + "\\IMG\\2.jpg")
+NUMBER3 = cv2.imread(sys.path[0] + "\\IMG\\3.jpg")
+NUMBER4 = cv2.imread(sys.path[0] + "\\IMG\\4.jpg")
+NUMBER5 = cv2.imread(sys.path[0] + "\\IMG\\5.jpg")
 STEP = 0.2
+
 d1 = {
     1: {
         0: fightmod.mod1,
@@ -84,7 +88,7 @@ d1 = {
 
 
 def startfind():
-    '''选关界面判断'''
+    """选关界面判断"""
     # y0   y1   x0   x1
     # 14, 50, 88, 161
     img = cut_image(14, 50, 88, 161, get_img())
@@ -99,7 +103,7 @@ def startfind():
 
 
 def gofind():
-    '''选关开始界面判断'''
+    """选关开始界面判断"""
     # y0   y1   x0   x1
     # 754, 830, 1220, 1465
     #
@@ -113,7 +117,7 @@ def gofind():
 
 
 def boostfind():
-    '''找boost'''
+    """找boost"""
     # y0   y1   x0   x1
     # 753, 790, 1259, 1410
     #
@@ -126,7 +130,7 @@ def boostfind():
 
 
 def endfind():
-    '''战斗结束判断'''
+    """战斗结束判断"""
     # y0   y1   x0   x1
     # 158, 216, 690, 907
     #
@@ -141,7 +145,7 @@ def endfind():
 
 
 def fullfind():
-    '''残血判定'''
+    """残血判定"""
     # y0   y1   x0   x1
     # 140, 150, 529, 534
     #
@@ -155,14 +159,14 @@ def fullfind():
 
 
 def offlinefind(flag=0):
-    '''断网判定'''
+    """断网判定"""
     # y0   y1   x0   x1
     # 390, 485, 626, 960
     #
     img = cut_image(390, 485, 626, 960, get_img())
     x = compare_image(img, OFFLINE)
     if x >= 0.9:
-        print('offline')
+        game_log.warning("offline")
         sleep(10)
         click(963, 632)  # 断网重连操作
         sleep(10)
@@ -176,20 +180,17 @@ def offlinefind(flag=0):
 # # # # # # # # # # # # # # # # # # # # #  初级操作函数  # # # # # # # # # # # # # # # # # # #
 
 
-def selection(n):
-    '''选关'''
-    #
-    #
-    #
-    if isinstance(n, int):
-        if n == 1:
+def selection(stage):
+    """选关"""
+    if isinstance(stage, int):
+        if stage == 1:
             click(1105, 231)  # 选关1
-        elif n == 2:
+        elif stage == 2:
             click(1105, 426)  # 选关2
-        elif n == 3:
+        elif stage == 3:
             click(1105, 612)  # 选关3
     else:
-        x, y = mathc_img(get_img(), n, 0.9)
+        x, y = mathc_img(get_img(), stage, 0.9)
         if x:
             click(x[0], y[0])
         else:  # 没找到目标，去重新选择
@@ -197,12 +198,12 @@ def selection(n):
 
 
 def go(team):
-    '''队伍选择'''
+    """队伍选择"""
     # 判断当前队伍 计算距目标的距离
     start = time()
     while True:
         if time() - start > 60:
-            raise OvertimeError('go')
+            raise OvertimeError("go")
         pic = cut_image(790, 815, 723, 743, get_img())
         x = []
         x.append(compare_image(pic, NUMBER1))
@@ -222,7 +223,7 @@ def go(team):
 
 
 def end():
-    '''结束处理'''
+    """结束处理"""
     click(500, 500)
     sleep(0.5)
     click(500, 500)
@@ -231,7 +232,7 @@ def end():
 
 
 def usegroup(fightway, wave):
-    '''战斗'''
+    """战斗"""
     extra_way = d1[fightway][wave]()
     sleep(3)
     return extra_way
@@ -241,13 +242,13 @@ def usegroup(fightway, wave):
 
 
 def select_stage(number):
-    '''选关'''
+    """选关"""
     start = time()
     while True:
         if time() - start > 60:
-            raise OvertimeError('stage')
+            raise OvertimeError("stage")
         offlinefind(1)
-        sleep(STEP*2)
+        sleep(STEP * 2)
         if startfind():
             selection(number)
             sleep(2)
@@ -255,13 +256,13 @@ def select_stage(number):
 
 
 def select_team(number):
-    '''选队伍和点击出发'''
+    """选队伍和点击出发"""
     start = time()
     while True:
         if time() - start > 60:
-            raise OvertimeError('team')
+            raise OvertimeError("team")
         offlinefind()
-        sleep(STEP*2)
+        sleep(STEP * 2)
         if gofind():
             go(number)
             sleep(2)
@@ -269,13 +270,13 @@ def select_team(number):
 
 
 def select_notfull(abnormal=0):
-    '''残血处理'''
+    """残血处理"""
     next_abnormal = extra(abnormal)
     sleep(5)
     start = time()
     while True:
         if time() - start > 30:
-            raise OvertimeError('notfull')
+            raise OvertimeError("notfull")
         if boostfind():
             if fullfind():
                 # 残血打完发现现在是满血
@@ -293,11 +294,11 @@ def select_notfull(abnormal=0):
 
 
 def select_wavefight(abnormal=0):
-    '''wave战斗选择'''
+    """wave战斗选择"""
     start = time()
     while True:
         if time() - start > 60:
-            raise OvertimeError('wavefight')
+            raise OvertimeError("wavefight")
         sleep(STEP * 2)
         offlinefind()
         if boostfind():
@@ -313,11 +314,11 @@ def select_wavefight(abnormal=0):
 
 
 def select_bossfight(abnormal):
-    '''boss战斗选择'''
+    """boss战斗选择"""
     start = time()
     while True:
         if time() - start > 60:
-            raise OvertimeError('bossfight')
+            raise OvertimeError("bossfight")
         sleep(STEP * 2)
         offlinefind()
         if boostfind():
@@ -329,7 +330,7 @@ def select_bossfight(abnormal):
 
 
 def wave3(normal):
-    '''三波战斗'''
+    """三波战斗"""
 
     if select_wavefight():
         return
@@ -349,11 +350,11 @@ def wave3(normal):
     if select_wavefight(abnormal):
         return
     else:
-        print('error')
+        game_log.error("wave3:no end")
 
 
 def boss(normal):
-    '''boss战斗'''
+    """boss战斗"""
     if select_bossfight(1):
         return
     else:
@@ -372,12 +373,12 @@ def boss(normal):
     if select_wavefight(abnormal):
         return
     else:
-        print('error')
+        game_log.error("boss:no end")
 
 
 def restart_program():
     python = sys.executable
-    os.execl(python, python, * sys.argv)
+    os.execl(python, python, *sys.argv)
 
 
 def restart_game():
@@ -400,6 +401,8 @@ def restart_game():
             click(48, 48)
         click(500, 500)
         sleep(5)
+
+
 # # # # # # # # # # # # # # # # # # # # #  主函数  # # # # # # # # # # # # # # # # # # #
 
 
@@ -423,20 +426,21 @@ def action(stage, team, normal, tim=30):
     """
     sleep(3)
     start = int(time())  # 开始计时
+    if d1[normal][0].stage() != "default":
+        stage = d1[normal][0].stage()
     fightway = d1[normal][0].mode()
-    print(fightway)
-    if fightway == 'boss':
+    if fightway == "boss":
         fightway = boss
-    if fightway == 'wave3':
+    elif fightway == "wave3":
         fightway = wave3
     while True:
         stop = int(time())  # 结束计时
         if stop - start > 60 * tim:
-            print('break at %s ' % strftime("%H:%M:%S", localtime()))
+            game_log.info("break")
             sleep(3)
             return stop - start
         try:
-            print('start at %s ' % strftime("%H:%M:%S", localtime()), end='')
+            game_log.info("start")
             select_stage(stage)  # 选关
             # print('team')
             select_team(team)  # 选队伍
@@ -444,17 +448,16 @@ def action(stage, team, normal, tim=30):
             fightway(normal)  # 战斗
             # print('end')
             end()  # 结束
-
             endtime = int(time())
-            print('time use:'+str(endtime - stop)+'s')
-
+            game_log.info("time use:" + str(endtime - stop) + "s")
         except OvertimeError as err:
-            print(err.type)
+
+            game_log.error(err.type)
             restart_game()
             # 返回起点
 
 
-class Fight():
+class Fight:
     def __init__(self, stage: int, team: int, fightway, normal: int, tim=30):
         self.stage = stage
         self.team = team
