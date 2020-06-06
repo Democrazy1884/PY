@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 class OvertimeError(RuntimeError):
     """超时"""
 

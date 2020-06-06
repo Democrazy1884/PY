@@ -255,7 +255,7 @@ class March:
                 sleep(1)
                 # 找MARCHDONE
                 start = time()
-                while True:
+                while 1:
                     if time() - start > 60:
                         raise OvertimeError("receive1")
                     x, y = mathc_img(get_img(), MARCHDONE, 0.9)
@@ -266,7 +266,7 @@ class March:
                     sleep(STEP * 2)
                 # 在回到远征界面前一直点
                 start = time()
-                while True:
+                while 1:
                     if time() - start > 60:
                         raise OvertimeError("receive2")
                     if marchfind():
@@ -294,7 +294,7 @@ class March:
         click(1387, 543)
         sleep(3)
         start = time()
-        while True:
+        while 1:
             if time() - start > 60:
                 raise OvertimeError("go")
             marchfind()
@@ -307,7 +307,7 @@ class March:
         """返回主界面"""
         click_s(1559, 35)
         start = time()
-        while True:
+        while 1:
             if time() - start > 60:
                 raise OvertimeError("exit")
             offlinefind()
@@ -321,7 +321,7 @@ class March:
     def select_player():
         # 选人
         start = time()
-        while True:
+        while 1:
             if time() - start > 60:
                 raise OvertimeError("select_player1")
             x, y = mathc_img(get_img(), ADDGIRL, 0.8)
@@ -331,7 +331,7 @@ class March:
                 break
         # 确定
         start = time()
-        while True:
+        while 1:
             if time() - start > 60:
                 raise OvertimeError("select_player2")
             x, y = mathc_img(get_img(), YES, 0.8)

@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 import cv2
 import sys
 from image import cut_image, compare_image

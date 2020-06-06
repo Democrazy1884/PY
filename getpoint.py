@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 import pyperclip
 import cv2
 from image import screenshot
@@ -14,7 +15,6 @@ def getposBgr(event, x, y, flags, param):
         x = str(x * 2)
         y = str(y * 2)
         string = "click(" + x + "," + y + ")"
-
         print(string)
         pyperclip.copy(string)
 

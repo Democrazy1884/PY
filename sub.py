@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 import threading
 import sys
 from image import screenshot
