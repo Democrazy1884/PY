@@ -3,16 +3,16 @@ def transform(p, screen):
     if isinstance(p, float):
         return int(p * screen)
     elif isinstance(p, int):
-        return float(format(p / screen, '.6f'))
+        return float(format(p / screen, ".6f"))
 
 
 def xtransform(x, screen=1600):
-    '''x坐标转换'''
+    """x坐标转换"""
     return transform(x, screen)
 
 
 def ytransform(y, screen=900):
-    '''y坐标转换'''
+    """y坐标转换"""
     return transform(y, screen)
 
 

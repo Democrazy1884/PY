@@ -1,46 +1,55 @@
 import threading
+import sys
 from image import screenshot
 from time import sleep
-STEP = 0.4
+from PyQt5.QtWidgets import QApplication
+
+STEP = 0.3
 
 img = 0
 
+app = QApplication(sys.argv)
 
-class event():
+
+class event:
     stop = threading.Event()  # 子程序结束事件
     done = threading.Event()
 
 
-def backstage():  # 子线程
+def backstage(app):  # 子线程
     event.stop.clear()
     global img
-    img = screenshot()
+    img = screenshot(app)
     event.done.set()
     while True:  # 子线程
-        img = screenshot()
+        img = screenshot(app)
         sleep(STEP * 2)
-        # print('sub working')
+        # print("sub working")
         if event.stop.is_set():
             break
 
 
-def substart():
-    # print('sub start')
-    back_stage = threading.Thread(target=backstage, args=())
-    back_stage.setDaemon(True)
-    back_stage.start()
-
-
 def get_img():
-    '''读取图像'''
+    """读取图像"""
     event.done.wait()
     return img
 
 
-def substop():
-    # print('sub stop')
-    event.stop.set()
+class Sub:
+    def stop():
+        "停止"
+        # print("sub stop")
+        event.stop.set()
+
+    def start():
+        "启动"
+        # print("sub start")
+        back_stage = threading.Thread(target=backstage, args=(app,))
+        back_stage.setDaemon(True)
+        back_stage.start()
+        return back_stage
 
 
 if __name__ == "__main__":
-    pass
+    x = Sub.substart()
+    x.join()

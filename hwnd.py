@@ -1,12 +1,16 @@
 # -*- coding:utf-8 -*-
 # 获取窗口句柄
 import win32gui
+
 hwnd_title = dict()
 
 
 def get_all_hwnd(hwnd, mouse):
-    if win32gui.IsWindow(hwnd) and win32gui.IsWindowEnabled(hwnd) \
-      and win32gui.IsWindowVisible(hwnd):
+    if (
+        win32gui.IsWindow(hwnd)
+        and win32gui.IsWindowEnabled(hwnd)
+        and win32gui.IsWindowVisible(hwnd)
+    ):
         hwnd_title.update({hwnd: win32gui.GetWindowText(hwnd)})
 
 

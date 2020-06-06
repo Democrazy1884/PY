@@ -1,7 +1,12 @@
 # -*- coding:utf-8 -*-
-
-
 import time
+import warnings
+from PyQt5.QtWidgets import QApplication
+import cv2
+import numpy as np
+import win32gui
+import sys
+from skimage.measure import compare_ssim as ssim
 
 
 def clock(func):
@@ -11,13 +16,13 @@ def clock(func):
         end = time.time()
         print(func.__name__, end - start)
         return result
+
     return clocked
 
 
 def mathc_img(image, target, value=0.8):
-    '''图像匹配'''
-    import cv2
-    import numpy as np
+    """图像匹配"""
+
     # 加载原始RGB图像
     if isinstance(image, str):
         img_rgb = cv2.imread(image)
@@ -47,8 +52,8 @@ def mathc_img(image, target, value=0.8):
 
 
 def cut_image(y0, y1, x0, x1, path_image1):
-    '''图像裁剪'''
-    import cv2
+    """图像裁剪"""
+
     if isinstance(path_image1, str):
         img = cv2.imwrite(path_image1)
     img = path_image1
@@ -57,10 +62,7 @@ def cut_image(y0, y1, x0, x1, path_image1):
 
 
 def compare_image(path_image1, path_image2):
-    '''图片比较'''
-    from skimage.measure import compare_ssim as ssim
-    import cv2
-    import warnings
+    """图片比较"""
 
     if isinstance(path_image1, str):
         imageA = cv2.imwrite(path_image1)
@@ -80,15 +82,13 @@ def compare_image(path_image1, path_image2):
     # compare_image.compare_image("1.png", "2.png")
 
 
+app = QApplication(sys.argv)
+
+
 # @clock
-def screenshot():
-    '''截图'''
-    from PyQt5.QtWidgets import QApplication
-    import win32gui
-    import sys
-    app = QApplication(sys.argv)
-    app = app
-    hwnd = win32gui.FindWindow(None, '雷电模拟器')
+def screenshot(app=app):
+    """截图"""
+    hwnd = win32gui.FindWindow(None, "雷电模拟器")
     screen = QApplication.primaryScreen()
     img = screen.grabWindow(hwnd).toImage()
     img = img.copy(1, 34, 1600, 900)
@@ -97,8 +97,7 @@ def screenshot():
 
 
 def convertQImageToMat(incomingImage):
-    '''  Converts a QImage into an opencv MAT format  '''
-    import numpy as np
+    """  Converts a QImage into an opencv MAT format  """
     incomingImage = incomingImage.convertToFormat(4)
 
     width = incomingImage.width()
@@ -111,12 +110,4 @@ def convertQImageToMat(incomingImage):
 
 
 if __name__ == "__main__":
-    import cv2
-    import keyboard
-
-    while True:
-        # keyboard.wait('ctrl+alt+a')
-        keyboard.wait('a')
-        cv2.imwrite('x.jpg', screenshot())
-        print('screenshot')
-        time.sleep(1)
+    pass

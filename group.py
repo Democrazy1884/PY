@@ -3,26 +3,26 @@ from adb import attack, boost, card, click, graze, skill
 
 
 def extra(s):
-    '''残血操作'''
+    """残血操作"""
     # print('extra:%d' % s)
     if isinstance(s, int):
         if s == 1:
-            '''全集中'''
+            """全集中"""
             attack(2)
             attack(2)
             attack(2)
         elif s == 2:
-            '''全分散'''
+            """全分散"""
             attack(1)
             attack(1)
             attack(1)
         elif s == 3:
-            '''一半集中一半分散'''
+            """一半集中一半分散"""
             attack(1)
             attack(2)
             attack(1)
         elif s == 4:
-            '''有什么符卡放什么'''
+            """有什么符卡放什么"""
             graze(1)
             boost(1)
             card(4)
@@ -36,22 +36,28 @@ def extra(s):
         return s()
 
 
-wave3 = 'wave3'
-boss = 'boss'
-default = 'default'
+wave3 = "wave3"
+boss = "boss"
+default = "default"
 
 
 class fightmod:
-    '''战斗操作类'''
+    """战斗操作类"""
 
-    class mod1:
-        '''模式1 妖梦刷L15'''
+    def __init__(self, mode, stage, fight, before):
+        self.mode = mode
+        self.stage = stage
+        self.fight = fight
+        self.before = before
 
-        def mode():
-            return 'wave3'
+    @classmethod
+    def mode1(cls):
+        """模式1 妖梦刷L15"""
+        mode = wave3
+        stage = default
 
-        def stage():
-            return default
+        def before_fight():
+            pass
 
         def fight1():
             skill([1.2])
@@ -70,134 +76,132 @@ class fightmod:
             card(5)
             return 4
 
-    class mod2:
-        '''模式2 八云蓝打L魔理沙'''
-        def mode():
-            return 'boss'
+        fight = (fight1, fight2, fight3)
+        return cls(mode, stage, fight, before_fight)
 
-        def stage():
-            return default
+    @classmethod
+    def mode2(cls):
+        """模式2 妖梦推土机"""
+        mode = wave3
+        stage = default
+
+        def before_fight():
+            pass
 
         def fight1():
+            skill(1.2)
+            graze(1)
+            boost(1)
             card(2)
+            return 1
 
         def fight2():
-            skill([1.2])
             graze(1)
+            boost(1)
             card(4)
+            return 1
 
         def fight3():
-            boost(2)
+            skill(1.1)
             graze(1)
-            skill([1.1])
-            card(1)
-            return fightmod.mod2.fight4
+            boost(1)
+            card(5)
+            return 1
 
-        def fight4():
+        fight = (fight1, fight2, fight3)
+        return cls(mode, stage, fight, before_fight)
+
+    @classmethod
+    def mode3(cls):
+        """模式3 蓝打2.4"""
+        mode = wave3
+        stage = default
+
+        def before_fight():
+            pass
+
+        def fight1():
+            skill(1.2)
+            graze(1)
+            boost(1)
+            card(1)
+            return ex1
+
+        def ex1():
+            boost(1)
+            card(2)
+            return 1
+
+        def fight2():
+            graze(1)
+            boost(2)
+            card(3)
+            return ex2
+
+        def ex2():
+            boost(1)
+            card(4)
+            return 1
+
+        def fight3():
+            skill(1.1)
+            graze(1)
             boost(3)
-            graze(1)
-            card(3)
-            return fightmod.mod2.extra
+            card(5)
+            return 1
 
-        def extra():
-            graze(1)
-            boost(1)
-            attack(2)
-            return fightmod.mod2.extra
+        fight = (fight1, fight2, fight3)
+        return cls(mode, stage, fight, before_fight)
 
-    class mod3:
-        '''模式3 八云蓝打L铃仙'''
-        def mode():
-            return 'boss'
+    @classmethod
+    def mode4(cls):
+        """模式4 刷华扇"""
+        mode = boss
+        stage = default
 
-        def stage():
-            return default
+        def before_fight():
+            pass
 
         def fight1():
-            skill([1.2])
-            card(2)
-            return fightmod.mod3.extra
-
-        def fight2():
-            skill([1.1])
-            boost(2)
+            skill([1.1, 1.2])
+            graze(1)
+            boost(1)
             card(1)
-            return fightmod.mod3.extra
+            return 1
 
-        def fight3():
-            boost(2)
+        def fight2():
             graze(1)
+            boost(2)
             card(3)
-            return fightmod.mod3.fight4
-
-        def fight4():
-            boost(1)
-            card(4)
-            return fightmod.mod3.extra
-
-        def extra():
-            boost(1)
-            attack(2)
-            return fightmod.mod3.extra
-
-    class mod4:
-        '''模式4 '''
-        def mode():
-            return ''
-
-        def stage():
-            return default
-
-        def fight1():
-            pass
-
-        def fight2():
-            pass
+            return 1
 
         def fight3():
+            graze(1)
+            boost(3)
+            card(2)
+            return 1
+
+        fight = (fight1, fight2, fight3)
+        return cls(mode, stage, fight, before_fight)
+
+    @classmethod
+    def mode5(cls):
+        """模式5 """
+        pass
+
+    @classmethod
+    def mode6(cls):
+        """模式6 """
+        pass
+
+    @classmethod
+    def mode7(cls):
+        """模式7 魔理沙打L15"""
+        mode = wave3
+        stage = default
+
+        def before_fight():
             pass
-
-    class mod5:
-        '''模式5 '''
-        def mode():
-            return 'boss'
-
-        def stage():
-            return default
-
-        def fight1():
-            pass
-
-        def fight2():
-            pass
-
-        def fight3():
-            pass
-
-    class mod6:
-        '''模式6 '''
-        def mode():
-            return 'boss'
-
-        def stage():
-            return default
-
-        def fight1():
-            pass
-
-        def fight2():
-            pass
-
-        def fight3():
-            pass
-
-    class mod7:
-        '''魔理沙打L15'''
-        def mode():
-            return 'wave3'
-
-        def stage():
-            return default
 
         def fight1():
             skill([1.2])
@@ -209,7 +213,7 @@ class fightmod:
             graze(1)
             boost(1)
             card(2)
-            return fightmod.mod7.fight2_extra
+            return fight2_extra
 
         def fight3():
             boost(3)
@@ -223,22 +227,20 @@ class fightmod:
             card(4)
             return 2
 
-    class mod8:
-        def fight1():
-            pass
+        fight = (fight1, fight2, fight3)
+        return cls(mode, stage, fight, before_fight)
 
-        def fight2():
-            pass
+    @classmethod
+    def mode8(cls):
+        """模式8 """
+        pass
 
-        def fight3():
-            pass
+    @classmethod
+    def mode9(cls):
+        """模式9 """
+        pass
 
-    class mod9:
-        def fight1():
-            pass
 
-        def fight2():
-            pass
-
-        def fight3():
-            pass
+if __name__ == "__main__":
+    x = fightmod.get_mode(1)
+    print(x)

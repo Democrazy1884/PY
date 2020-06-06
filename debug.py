@@ -8,7 +8,7 @@ def main():
     substart()
     while True:
         March.start()
-        sleep(60)
+        sleep(60 * 15)
 
 
 if __name__ == "__main__":

@@ -1,44 +1,45 @@
 # -*- coding:utf-8 -*-
-import points as p
-from time import sleep
-import cv2
+import subprocess
 import sys
+from time import sleep
+import random
+
+import cv2
+
+import points as p
+from image import compare_image, cut_image
 from sub import get_img
-from image import cut_image, compare_image
 
 
 def order(orders):
-    '''adb调用'''
-    import subprocess
-    return subprocess.Popen(orders)
+    """adb调用"""
+    return subprocess.Popen(orders, shell=True)
 
 
 def screencap(string):
-    '''截图'''
-    order('adb shell screencap -p /storage/emulated/0/Pictures/' + string)
+    """截图"""
+    order("adb shell screencap -p /storage/emulated/0/Pictures/" + string)
     sleep(1)
-    order('adb pull /storage/emulated/0/Pictures/' + string)
+    order("adb pull /storage/emulated/0/Pictures/" + string)
     return cv2.imread(string)
 
 
 def click(x, y, tim=0.5):
-    '''点击'''
-    import random
+    """点击"""
     x = x + random.randint(-20, 20)
     y = y + random.randint(-20, 20)
-    order('adb shell input tap %d %d' % (x, y))
+    order("adb shell input tap %d %d" % (x, y))
     sleep(tim)
 
 
 def click_s(x, y, tim=0.5):
-    '''精确点击'''
-    order('adb shell input tap %d %d' % (x, y))
+    """精确点击"""
+    order("adb shell input tap %d %d" % (x, y))
     sleep(tim)
 
 
 def swipe(x1, y1, x2, y2, tim):
-    order('adb shell input touchscreen swipe %d %d %d %d %d' %
-          (x1, y1, x2, y2, tim))
+    order("adb shell input touchscreen swipe %d %d %d %d %d" % (x1, y1, x2, y2, tim))
 
 
 def attack(value):
@@ -72,10 +73,10 @@ def graze(value):
         click(p.graze[0], p.graze[1])  # 结界3
 
 
-ZERO = cv2.imread(sys.path[0] + '\\IMG\\zero.jpg')
-ONE = cv2.imread(sys.path[0] + '\\IMG\\one.jpg')
-TWO = cv2.imread(sys.path[0] + '\\IMG\\two.jpg')
-THREE = cv2.imread(sys.path[0] + '\\IMG\\three.jpg')
+ZERO = cv2.imread(sys.path[0] + "\\IMG\\zero.jpg")
+ONE = cv2.imread(sys.path[0] + "\\IMG\\one.jpg")
+TWO = cv2.imread(sys.path[0] + "\\IMG\\two.jpg")
+THREE = cv2.imread(sys.path[0] + "\\IMG\\three.jpg")
 
 
 def boost(value, get_img=get_img):
@@ -105,7 +106,7 @@ def boost(value, get_img=get_img):
 
 
 def skill(value):
-    if isinstance(value, int):
+    if isinstance(value, float):
         value = [value]
     click(1524, 671)
     sleep(0.5)
@@ -139,3 +140,4 @@ if __name__ == "__main__":
         click(604, 614)
         sleep(1)
         click(976, 720)
+        sleep(1)
