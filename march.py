@@ -22,7 +22,7 @@ POWER = cv2.imread(sys.path[0] + "\\IMG\\l4.jpg", 0)
 GOLD2 = cv2.imread(sys.path[0] + "\\IMG\\l5.jpg", 0)
 
 ADDGIRL = cv2.imread(sys.path[0] + "\\IMG\\addgirl.jpg", 0)
-M3 = cv2.imread(sys.path[0] + "\\IMG\\3m.jpg")
+
 MARCHDONE = cv2.imread(sys.path[0] + "\\IMG\\marchdone.jpg", 0)
 STEP = 0.2
 
@@ -104,6 +104,78 @@ def mainpage_buildingfind(get_img=get_img):
         return True
     else:
         return False
+
+
+SKILLROOM = cv2.imread(sys.path[0] + "\\IMG\\skillpoint.jpg")
+
+
+def mainpage_building_skill_room_point(get_img=get_img):
+    """道场红点判断"""
+    img = cut_image(238, 260, 1418, 1430, get_img())
+    x = compare_image(img, SKILLROOM)
+    if x > 0.8:
+        return True
+    else:
+        return False
+
+
+SKILLPOINT = cv2.imread(sys.path[0] + "\\IMG\\skillyes.jpg")
+
+
+def mainpage_building_skill_room_find(get_img=get_img):
+    """道场确定判断"""
+    img = cut_image(608, 656, 914, 1026, get_img())
+    x = compare_image(img, SKILLPOINT)
+    if x > 0.8:
+        return True
+    else:
+        return False
+
+
+M3 = cv2.imread(sys.path[0] + "\\IMG\\3m.jpg")
+
+
+def fullfind():
+    """三个远征满了判断"""
+    img = cut_image(812, 854, 122, 146, get_img())
+    x = compare_image(img, M3)
+    print(x)
+    if x > 0.75:
+        return True
+    else:
+        return False
+
+
+EXP = cv2.imread(sys.path[0] + "\\IMG\\150exp.jpg")
+
+
+def skill_room():
+    """道场续书"""
+    # 设施有红点吗
+    if not mainpage_buildingfind():
+        return
+    click(800, 800)
+    sleep(5)
+    if not mainpage_building_skill_room_point():
+        return
+    start = time()
+    while 1:
+        x, y = mathc_img(get_img(), EXP, 0.9)
+        if time() - start > 60:
+            raise OvertimeError("skill_room")
+        elif mainpage_building_skill_room_find():
+            click(1342, 762)
+            sleep(3)
+            continue
+        elif x:
+            x, y = March.remove_same(x, y)
+            click(x[1], y[1] + 20, 2)
+            click(1322, 764, 1)
+            click(992, 632, 1)
+            sleep(3)
+            continue
+        else:
+            break
 
 
 class March:
@@ -392,16 +464,6 @@ class March:
             click(866, 762)
         March.select_player()
 
-    def fullfind():
-        """三个远征满了判断"""
-        img = cut_image(815, 853, 113, 197, get_img())
-        x = compare_image(img, M3)
-        # print(x)
-        if x > 0.8:
-            return True
-        else:
-            return False
-
     def send(available_list, modelist):
         """发远征"""
         # 反转list
@@ -411,7 +473,7 @@ class March:
             # 按先限时后普通的顺序选择远征
             for march in available_list:
                 # 三个远征满了就返回
-                if March.fullfind():
+                if fullfind():
                     return
                 # march 必须为可用 且为当前选择的mode
                 if march.situation == "available" and string in march.mode:
@@ -435,7 +497,8 @@ class March:
                 return
             else:
                 game_log.info("march start")
-            # TODO 道场续书
+            # 道场续书
+            skill_room()
             # 收远征
             March.receive()
             if sel == "receive":
@@ -454,3 +517,7 @@ class March:
         except OvertimeError as err:
             game_log.error(err.type)
             March.start()
+
+
+if __name__ == "__main__":
+    pass

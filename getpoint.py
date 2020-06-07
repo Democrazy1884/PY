@@ -5,11 +5,6 @@ from image import screenshot
 import time
 
 
-def getposHsv(event, x, y, flags, param):
-    if event == cv2.EVENT_LBUTTONDOWN:
-        print("HSV is", HSV[y, x])
-
-
 def getposBgr(event, x, y, flags, param):
     if event == cv2.EVENT_LBUTTONDOWN:
         x = str(x * 2)
@@ -19,7 +14,7 @@ def getposBgr(event, x, y, flags, param):
         pyperclip.copy(string)
 
 
-while True:
+if __name__ == "__main__":
     #   读 取 图 片
     img = screenshot()  # 直接读为灰度图像
     cv2.imwrite("D:\\PY\\x.jpg", img)
@@ -32,6 +27,6 @@ while True:
     # 鼠标点击响应事件
     # cv2.imshow("imageHSV",HSV)
     cv2.imshow("get img", img)
-    cv2.setMouseCallback("image", getposBgr)
+    cv2.setMouseCallback("get img", getposBgr)
     time.sleep(0.5)
     cv2.waitKey(0)

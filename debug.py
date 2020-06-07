@@ -1,12 +1,12 @@
 # -*- coding:utf-8 -*-
 from march import March
-from sub import substart
+from sub import Sub
 from time import sleep
 
 
 def main():
     "远征debug"
-    substart()
+    Sub.start()
     while True:
         March.start()
         sleep(60 * 15)
