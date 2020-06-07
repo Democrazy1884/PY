@@ -93,6 +93,19 @@ def mainpagefind(get_img=get_img):
         return False
 
 
+BUILDING = cv2.imread(sys.path[0] + "\\IMG\\building.jpg")
+
+
+def mainpage_buildingfind(get_img=get_img):
+    """设施红点判断"""
+    img = cut_image(754, 770, 880, 900, get_img())
+    x = compare_image(img, BUILDING)
+    if x > 0.8:
+        return True
+    else:
+        return False
+
+
 class March:
     """远征类"""
 
@@ -422,6 +435,7 @@ class March:
                 return
             else:
                 game_log.info("march start")
+            # TODO 道场续书
             # 收远征
             March.receive()
             if sel == "receive":

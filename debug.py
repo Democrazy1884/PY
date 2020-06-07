@@ -5,6 +5,7 @@ from time import sleep
 
 
 def main():
+    "远征debug"
     substart()
     while True:
         March.start()

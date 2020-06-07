@@ -484,7 +484,10 @@ class Fight:
     """
 
     def __init__(self, stage: int, team: int, group: int):
-        group = d[group]()  # 初始化战斗组对象
+        if isinstance(group, int):
+            group = d[group]()  # 初始化战斗组对象
+        else:
+            pass  # TODO 其它的读取方法，从json读啥的
         self.stage = stage  # 选关
         self.team = team  # 选队伍
         self.group = group  # 选战斗模式

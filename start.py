@@ -31,4 +31,4 @@ while True:
     offlinefind()
     sleep(STEP)
 
-# 红点判断 1技能 2打工 3寺子屋 4战斗
+# TODO 红点判断 1技能 2打工 3寺子屋 4战斗

@@ -31,7 +31,7 @@ while True:
     HSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     # 鼠标点击响应事件
     # cv2.imshow("imageHSV",HSV)
-    cv2.imshow("image", img)
+    cv2.imshow("get img", img)
     cv2.setMouseCallback("image", getposBgr)
     time.sleep(0.5)
     cv2.waitKey(0)
