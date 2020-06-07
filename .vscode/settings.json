@@ -24,6 +24,7 @@
         "lbuttonup",
         "linting",
         "mathc",
+        "ndarray",
         "numpy",
         "opencv",
         "paramiko",

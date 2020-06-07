@@ -4,9 +4,10 @@ from time import sleep, time
 import game_log
 import cv2
 from adb import click, swipe, click_s
-from image import compare_image, cut_image, mathc_img
+from image import cut_image, mathc_img
 from sub import get_img
 from gameerror import OvertimeError
+from universe import search
 
 LV = cv2.imread(sys.path[0] + "\\IMG\\lv.jpg", 0)  # 远征检测
 MARCHPAGE = cv2.imread(sys.path[0] + "\\IMG\\marchpage.jpg")
@@ -24,126 +25,81 @@ GOLD2 = cv2.imread(sys.path[0] + "\\IMG\\l5.jpg", 0)
 ADDGIRL = cv2.imread(sys.path[0] + "\\IMG\\addgirl.jpg", 0)
 
 MARCHDONE = cv2.imread(sys.path[0] + "\\IMG\\marchdone.jpg", 0)
-STEP = 0.2
+STEP = 0.5
 
 OFFLINE = cv2.imread(sys.path[0] + "\\IMG\\offline.jpg")
 
 
-def offlinefind(get_img=get_img):
+def offlinefind(img=get_img):
     """断网判定"""
-    # y0   y1   x0   x1
-    # 390, 485, 626, 960
-    #
-    img = cut_image(390, 485, 626, 960, get_img())
-    x = compare_image(img, OFFLINE)
-    if x >= 0.9:
+    if search(390, 485, 626, 960, img, OFFLINE, 0.9):
         click(963, 632)  # 断网重连操作
         game_log.warning("offline")
         sleep(10)
         return True
-    return False
+    else:
+        return False
 
 
 FIRST = cv2.imread(sys.path[0] + "\\IMG\\first.jpg")  # 开始界面
 
 
-def firstpagefind(get_img=get_img):
-    """初始界面判断"""
-    img = cut_image(839, 884, 12, 774, get_img())
-    x = compare_image(img, FIRST)
-    if x > 0.5:
-        return True
-    else:
-        return False
+def firstpagefind(img=get_img):
+    "初始界面判断"
+    return search(839, 884, 12, 774, img, FIRST, 0.5)
 
 
-def marchfind(get_img=get_img):
+def marchfind(img=get_img):
     """远征界面判断"""
-    img = cut_image(13, 48, 89, 231, get_img())  # 远征判断
-    x = compare_image(img, MARCHPAGE)
-    if x > 0.8:
-        return True
-    else:
-        return False
+    return search(13, 48, 89, 231, img, MARCHPAGE, 0.8)
 
 
 MARCH = cv2.imread(sys.path[0] + "\\IMG\\march.jpg")  # 远征红点
 
 
-def mainpage_marchfind(get_img=get_img):
+def mainpage_marchfind(img=get_img):
     """主界面远征判断"""
-    img = cut_image(480, 502, 1415, 1445, get_img())  # 远征判断
-    x = compare_image(img, MARCH)
-    if x > 0.8:
-        return True
-    else:
-        return False
+    return search(480, 502, 1415, 1445, img, MARCH, 0.8)
 
 
 MAIN = cv2.imread(sys.path[0] + "\\IMG\\main.jpg")  # 主界面
 
 
-def mainpagefind(get_img=get_img):
+def mainpagefind(img=get_img):
     """主界面判断"""
-    img = cut_image(696, 737, 1424, 1521, get_img())
-    x = compare_image(img, MAIN)
-    if x > 0.8:
-        return True
-    else:
-        return False
+    return search(696, 737, 1424, 1521, img, MAIN, 0.8)
 
 
 BUILDING = cv2.imread(sys.path[0] + "\\IMG\\building.jpg")
 
 
-def mainpage_buildingfind(get_img=get_img):
+def mainpage_buildingfind(img=get_img):
     """设施红点判断"""
-    img = cut_image(754, 770, 880, 900, get_img())
-    x = compare_image(img, BUILDING)
-    if x > 0.8:
-        return True
-    else:
-        return False
+    return search(754, 770, 880, 900, img, BUILDING, 0.8)
 
 
 SKILLROOM = cv2.imread(sys.path[0] + "\\IMG\\skillpoint.jpg")
 
 
-def mainpage_building_skill_room_point(get_img=get_img):
+def mainpage_building_skill_room_point(img=get_img):
     """道场红点判断"""
-    img = cut_image(238, 260, 1418, 1430, get_img())
-    x = compare_image(img, SKILLROOM)
-    if x > 0.8:
-        return True
-    else:
-        return False
+    return search(238, 260, 1418, 1430, img, SKILLROOM, 0.8)
 
 
 SKILLPOINT = cv2.imread(sys.path[0] + "\\IMG\\skillyes.jpg")
 
 
-def mainpage_building_skill_room_find(get_img=get_img):
+def mainpage_building_skill_room_find(img=get_img):
     """道场确定判断"""
-    img = cut_image(608, 656, 914, 1026, get_img())
-    x = compare_image(img, SKILLPOINT)
-    if x > 0.8:
-        return True
-    else:
-        return False
+    return search(608, 656, 914, 1026, img, SKILLPOINT, 0.8)
 
 
 M3 = cv2.imread(sys.path[0] + "\\IMG\\3m.jpg")
 
 
-def fullfind():
+def fullfind(img=get_img):
     """三个远征满了判断"""
-    img = cut_image(812, 854, 122, 146, get_img())
-    x = compare_image(img, M3)
-    print(x)
-    if x > 0.75:
-        return True
-    else:
-        return False
+    return search(812, 854, 122, 146, img, M3, 0.75)
 
 
 EXP = cv2.imread(sys.path[0] + "\\IMG\\150exp.jpg")
@@ -156,7 +112,9 @@ def skill_room():
         return
     click(800, 800)
     sleep(5)
+    # 道场有红点吗
     if not mainpage_building_skill_room_point():
+        click(792, 772)
         return
     start = time()
     while 1:
@@ -495,10 +453,9 @@ class March:
                 click(1472, 717)
                 sleep(3)
                 return
-            else:
-                game_log.info("march start")
             # 道场续书
             skill_room()
+            game_log.info("march start")
             # 收远征
             March.receive()
             if sel == "receive":

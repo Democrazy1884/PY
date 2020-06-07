@@ -5,11 +5,9 @@ from march import March
 from time import sleep
 
 # 选关 队伍 战斗组
-Youmu_l15 = Fight(2, 3, 1)  # 妖梦刷L15
-Marisa_l15 = Fight(2, 4, 7)  # 魔理沙刷L15
 Youmu_test = Fight(1, 3, 2)
 Lan_2 = Fight(2, 1, 3)  # 蓝打2.4
-hs = (Fight(1, 4, 4), Fight(1, 3, 4), Fight(1, 2, 4))  # 刷华扇
+hs = (Fight(1, 4, 4), Fight(1, 3, 4), Fight(1, 2, 4))  # 刷华扇1.3.3
 
 
 def main(sel):
@@ -26,10 +24,7 @@ def main(sel):
             hs[i].run_time_mode(30)
             March.start()
     elif sel == 3:
-        Marisa_l15.run_time_mode(30)  # 魔理沙刷L15
-        March.start()
-        Youmu_l15.run_time_mode(30)  # 妖梦刷L15
-        March.start()
+        pass
 
 
 if __name__ == "__main__":

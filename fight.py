@@ -3,12 +3,12 @@ import os
 import sys
 from time import sleep, time
 import cv2
-
+from universe import search
 import game_log
 from adb import click  # , swipe
 from gameerror import OvertimeError, Watererror
 from group import extra, fightmod
-from image import compare_image, cut_image, mathc_img
+from image import mathc_img
 from sub import get_img
 
 STEP = 0.5
@@ -18,16 +18,11 @@ FIGHT = cv2.imread(sys.path[0] + "\\IMG\\fight.jpg")
 FIGHT1 = cv2.imread(sys.path[0] + "\\IMG\\fight1.jpg")
 
 
-def startfind():
+def startfind(img=get_img):
     """选关界面判断"""
-    # y0   y1   x0   x1
-    # 14, 50, 88, 161
-    img = cut_image(14, 50, 88, 161, get_img())
-    x = compare_image(img, FIGHT)
-    x1 = compare_image(img, FIGHT1)
-    if x >= 0.8:
-        return True
-    elif x1 >= 0.8:
+    if search(14, 50, 88, 161, img, FIGHT, 0.8) or search(
+        14, 50, 88, 161, img, FIGHT1, 0.8
+    ):
         return True
     else:
         return False
@@ -36,98 +31,49 @@ def startfind():
 GO = cv2.imread(sys.path[0] + "\\IMG\\go.jpg")
 
 
-def gofind():
+def gofind(img=get_img):
     """选关开始界面判断"""
-    # y0   y1   x0   x1
-    # 754, 830, 1220, 1465
-    #
-    img = cut_image(754, 830, 1220, 1465, get_img())
-    x = compare_image(img, GO)
-    if x >= 0.8:
-        return True
-    else:
-        return False
-    # print(x)
+    return search(754, 830, 1220, 1465, img, GO, 0.8)
 
 
 BOOST = cv2.imread(sys.path[0] + "\\IMG\\boost.jpg")  # 战斗判断用 boost
 
 
-def boostfind():
+def boostfind(img=get_img):
     """找boost"""
-    # y0   y1   x0   x1
-    # 753, 790, 1259, 1410
-    #
-    img = cut_image(753, 790, 1259, 1410, get_img())
-    x = compare_image(img, BOOST)
-    if x >= 0.7:  # boost 找到了
-        return True
-    else:
-        return False
+    return search(753, 790, 1259, 1410, img, BOOST, 0.7)
 
 
 END = cv2.imread(sys.path[0] + "\\IMG\\end.jpg")  # 战斗结束
 
 
-def endfind():
+def endfind(img=get_img):
     """战斗结束判断"""
-    # y0   y1   x0   x1
-    # 158, 216, 690, 907
-    #
-    img = cut_image(158, 216, 690, 907, get_img())
-    x = compare_image(img, END)
-    # print(x)
-    if x >= 0.4:
-        return True
-    else:
-        return False
-    # print(x)
+    return search(158, 216, 690, 907, img, END, 0.4)
 
 
 FULL = cv2.imread(sys.path[0] + "\\IMG\\full.jpg")
 
 
-def fullfind():
+def fullfind(img=get_img):
     """残血判定"""
-    # y0   y1   x0   x1
-    # 140, 150, 529, 534
-    #
-    img = cut_image(140, 150, 529, 534, get_img())
-    x = compare_image(img, FULL)
-    if x >= 0.8:
-        return True
-    else:
-        return False
-    # print(x)
+    return search(140, 150, 529, 534, img, FULL, 0.8)
 
 
 NEXT = cv2.imread(sys.path[0] + "\\IMG\\next.jpg")
 
 
-def nextfind():
+def nextfind(img=get_img):
     "结束返回判定"
-    img = cut_image(795, 831, 1388, 1465, get_img())
-    x = compare_image(img, NEXT)
-    if x >= 0.8:
-        return True
-    else:
-        return False
+    return search(795, 831, 1388, 1465, img, NEXT, 0.8)
 
 
 AGAIN = cv2.imread(sys.path[0] + "\\IMG\\again.jpg")
 
 
-def againfind():
+def againfind(img=get_img):
     """结束再开判定"""
-    # img = cut_image(795, 831, 101, 181, img)
-    # img = cut_image(795, 831, 1388, 1465, img)
-    img = cut_image(795, 831, 101, 181, get_img())
-    x = compare_image(img, AGAIN)
-    if x >= 0.8:
-        return True
-    else:
-        return False
-    # print(x)
+    return search(795, 831, 101, 181, img, AGAIN, 0.8)
 
 
 WATER = cv2.imread(sys.path[0] + "\\IMG\\water.jpg", 0)
@@ -147,12 +93,7 @@ OFFLINE = cv2.imread(sys.path[0] + "\\IMG\\offline.jpg")
 
 def offlinefind(flag=0):
     """断网判定"""
-    # y0   y1   x0   x1
-    # 390, 485, 626, 960
-    #
-    img = cut_image(390, 485, 626, 960, get_img())
-    x = compare_image(img, OFFLINE)
-    if x >= 0.9:
+    if search(390, 485, 626, 960, get_img, OFFLINE, 0.9):
         game_log.warning("offline")
         sleep(10)
         click(963, 632)  # 断网重连操作
@@ -164,45 +105,31 @@ def offlinefind(flag=0):
         return False
 
 
-NUM5 = cv2.imread(sys.path[0] + "\\IMG\\power\\5.jpg")
-NUM6 = cv2.imread(sys.path[0] + "\\IMG\\power\\6.jpg")
-NUM7 = cv2.imread(sys.path[0] + "\\IMG\\power\\7.jpg")
-NUM8 = cv2.imread(sys.path[0] + "\\IMG\\power\\8.jpg")
-NUM9 = cv2.imread(sys.path[0] + "\\IMG\\power\\8.jpg")
-NUM10 = cv2.imread(sys.path[0] + "\\IMG\\power\\10.jpg")
-NUM11 = cv2.imread(sys.path[0] + "\\IMG\\power\\11.jpg")
-NUM12 = cv2.imread(sys.path[0] + "\\IMG\\power\\12.jpg")
-NUM13 = cv2.imread(sys.path[0] + "\\IMG\\power\\13.jpg")
-NUM14 = cv2.imread(sys.path[0] + "\\IMG\\power\\14.jpg")
-NUM15 = cv2.imread(sys.path[0] + "\\IMG\\power\\15.jpg")
-NUM16 = cv2.imread(sys.path[0] + "\\IMG\\power\\16.jpg")
-NUM17 = cv2.imread(sys.path[0] + "\\IMG\\power\\17.jpg")
-NUM18 = cv2.imread(sys.path[0] + "\\IMG\\power\\18.jpg")
-NUM19 = cv2.imread(sys.path[0] + "\\IMG\\power\\19.jpg")
-NUM20 = cv2.imread(sys.path[0] + "\\IMG\\power\\20.jpg")
+NUM_tuple = (
+    cv2.imread(sys.path[0] + "\\IMG\\power\\5.jpg"),
+    cv2.imread(sys.path[0] + "\\IMG\\power\\6.jpg"),
+    cv2.imread(sys.path[0] + "\\IMG\\power\\7.jpg"),
+    cv2.imread(sys.path[0] + "\\IMG\\power\\8.jpg"),
+    cv2.imread(sys.path[0] + "\\IMG\\power\\8.jpg"),
+    cv2.imread(sys.path[0] + "\\IMG\\power\\10.jpg"),
+    cv2.imread(sys.path[0] + "\\IMG\\power\\11.jpg"),
+    cv2.imread(sys.path[0] + "\\IMG\\power\\12.jpg"),
+    cv2.imread(sys.path[0] + "\\IMG\\power\\13.jpg"),
+    cv2.imread(sys.path[0] + "\\IMG\\power\\14.jpg"),
+    cv2.imread(sys.path[0] + "\\IMG\\power\\15.jpg"),
+    cv2.imread(sys.path[0] + "\\IMG\\power\\16.jpg"),
+    cv2.imread(sys.path[0] + "\\IMG\\power\\17.jpg"),
+    cv2.imread(sys.path[0] + "\\IMG\\power\\18.jpg"),
+    cv2.imread(sys.path[0] + "\\IMG\\power\\19.jpg"),
+    cv2.imread(sys.path[0] + "\\IMG\\power\\20.jpg"),
+)
 
 
-def powerfind():
+def powerfind(img=get_img):
     "油耗判定"
-    img = cut_image(686, 726, 1371, 1431, get_img())
-    x = []
-    x.append(compare_image(img, NUM5))
-    x.append(compare_image(img, NUM6))
-    x.append(compare_image(img, NUM7))
-    x.append(compare_image(img, NUM8))
-    x.append(compare_image(img, NUM9))
-    x.append(compare_image(img, NUM10))
-    x.append(compare_image(img, NUM11))
-    x.append(compare_image(img, NUM12))
-    x.append(compare_image(img, NUM13))
-    x.append(compare_image(img, NUM14))
-    x.append(compare_image(img, NUM15))
-    x.append(compare_image(img, NUM16))
-    x.append(compare_image(img, NUM17))
-    x.append(compare_image(img, NUM18))
-    x.append(compare_image(img, NUM19))
-    x.append(compare_image(img, NUM20))
-    return x.index(max(x)) + 5
+    ret = search(686, 726, 1371, 1431, img, NUM_tuple, 0.5)
+    if isinstance(ret, int):
+        return ret
 
 
 # # # # # # # # # # # # # # # # # # # # #  初级操作函数  # # # # # # # # # # # # # # # # # # #
@@ -225,11 +152,13 @@ def selection(stage):
             pass
 
 
-NUMBER1 = cv2.imread(sys.path[0] + "\\IMG\\1.jpg")
-NUMBER2 = cv2.imread(sys.path[0] + "\\IMG\\2.jpg")
-NUMBER3 = cv2.imread(sys.path[0] + "\\IMG\\3.jpg")
-NUMBER4 = cv2.imread(sys.path[0] + "\\IMG\\4.jpg")
-NUMBER5 = cv2.imread(sys.path[0] + "\\IMG\\5.jpg")
+NUM5_tuple = (
+    cv2.imread(sys.path[0] + "\\IMG\\1.jpg"),
+    cv2.imread(sys.path[0] + "\\IMG\\2.jpg"),
+    cv2.imread(sys.path[0] + "\\IMG\\3.jpg"),
+    cv2.imread(sys.path[0] + "\\IMG\\4.jpg"),
+    cv2.imread(sys.path[0] + "\\IMG\\5.jpg"),
+)
 
 
 def go(team):
@@ -239,14 +168,8 @@ def go(team):
     while 1:
         if time() - start > 60:
             raise OvertimeError("go")
-        pic = cut_image(790, 815, 723, 743, get_img())
-        x = []
-        x.append(compare_image(pic, NUMBER1))
-        x.append(compare_image(pic, NUMBER2))
-        x.append(compare_image(pic, NUMBER3))
-        x.append(compare_image(pic, NUMBER4))
-        x.append(compare_image(pic, NUMBER5))
-        value = x.index(max(x)) + 1 - team
+        value = search(790, 815, 723, 743, get_img, NUM5_tuple, 0.5)
+        value = value + 1 - team
         if value == 0:
             power_use = powerfind()
             # print(power_use)
@@ -494,6 +417,8 @@ class Fight:
         # 中断重启所需信息
         self.info = None
         self.mode = None
+        # 总用时
+        self.all_time_use = 0
 
     def action_sub(self):
         "战斗函数，单次运行"
@@ -605,8 +530,6 @@ class Fight:
             self.action()
         except Watererror as e:
             game_log.error(e.type)
-            # sleep(200)
-            # self.action_main()
         finally:
             return self.all_time_use
 
