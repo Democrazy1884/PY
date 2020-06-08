@@ -8,6 +8,7 @@ from image import cut_image, mathc_img
 from sub import get_img
 from gameerror import OvertimeError
 from universe import search
+from universe import remove_same
 
 LV = cv2.imread(sys.path[0] + "\\IMG\\lv.jpg", 0)  # 远征检测
 MARCHPAGE = cv2.imread(sys.path[0] + "\\IMG\\marchpage.jpg")
@@ -102,7 +103,21 @@ def fullfind(img=get_img):
     return search(812, 854, 122, 146, img, M3, 0.75)
 
 
-EXP = cv2.imread(sys.path[0] + "\\IMG\\150exp.jpg")
+EXP = cv2.imread(sys.path[0] + "\\IMG\\150exp.jpg", 0)
+
+TEAM4 = cv2.imread(sys.path[0] + "\\IMG\\4team.jpg")
+TEAM5 = cv2.imread(sys.path[0] + "\\IMG\\5team.jpg")
+
+
+def number_find(img=get_img):
+    """远征个数判断"""
+    if search(761, 781, 1553, 1564, img, TEAM4, 0.8):
+        return 4
+    elif search(632, 646, 1552, 1564, img, TEAM5, 0.8):
+        return 5
+    else:
+        up_swipe()
+        return number_find()
 
 
 def skill_room():
@@ -116,24 +131,69 @@ def skill_room():
     if not mainpage_building_skill_room_point():
         click(792, 772)
         return
+    else:
+        click(1316, 464)
     start = time()
     while 1:
+        sleep(5)
         x, y = mathc_img(get_img(), EXP, 0.9)
-        if time() - start > 60:
-            raise OvertimeError("skill_room")
+        if time() - start > 30:
+            break
+            # raise OvertimeError("skill_room")
         elif mainpage_building_skill_room_find():
             click(1342, 762)
             sleep(3)
             continue
         elif x:
-            x, y = March.remove_same(x, y)
+            x, y = remove_same(x, y)
             click(x[1], y[1] + 20, 2)
             click(1322, 764, 1)
             click(992, 632, 1)
             sleep(3)
             continue
-        else:
+
+
+def down_swipe():
+    """下滑"""
+    swipe(1557, 261, 1560, 615, 200)
+    sleep(1)
+
+
+def up_swipe():
+    """上滑"""
+    swipe(1560, 615, 1557, 261, 200)
+    sleep(1)
+
+
+def go_to_main():
+    """进入远征界面"""
+    click(1387, 543)
+    sleep(3)
+    start = time()
+    while 1:
+        if time() - start > 60:
+            raise OvertimeError("go")
+        marchfind()
+        offlinefind()
+        if marchfind():
             break
+        sleep(STEP * 2)
+
+
+def exit_to_main():
+    """返回主界面"""
+    click_s(1559, 35)
+    start = time()
+    while 1:
+        if time() - start > 60:
+            raise OvertimeError("exit")
+        offlinefind()
+        if mainpagefind():
+            break
+        if time() - start > 10:
+            click_s(1559, 35)
+            sleep(5)
+        sleep(STEP * 2)
 
 
 class March:
@@ -148,97 +208,59 @@ class March:
         :name: 远征名字，选择合适队员用
         :situation: 情况 进行中 结束 可用
         """
+
+        def get_mode(img):
+            """获取类别"""
+            x, y = mathc_img(img, BOOK, 0.8)
+            x, y = remove_same(x, y)
+            # print(x)
+            string = "nothing"
+            if x:
+                string = "book"  # 指南书
+            x, y = mathc_img(img, GOLD1, 0.9)
+            x, y = remove_same(x, y)
+            # print(x)
+            if x:
+                string = "gold1"  # 封结晶
+            x, y = mathc_img(img, GOLD2, 0.9)
+            x, y = remove_same(x, y)
+            # print(x)
+            if x:
+                string = "gold2"  # 神结晶
+            x, y = mathc_img(img, CARD, 0.8)
+            x, y = remove_same(x, y)
+            # print(x)
+            if x:
+                string = "card"  # 绘扎
+            x, y = mathc_img(img, POWER, 0.8)
+            x, y = remove_same(x, y)
+            # print(x)
+            if x:
+                string = "power"  # 灵力
+            return string
+
+        def get_name(img):
+            """获取名字"""
+            return 1
+
+        def get_situation(img):
+            """获取状态"""
+            x1, y1 = mathc_img(img, DONE, 0.9)
+            x2, y2 = mathc_img(img, WORKING, 0.9)
+            if x1:
+                return "done"  # 状态为完成
+            elif x2:
+                return "doing"  # 状态为进行中
+            else:
+                return "available"  # 状态为可选
+
         # cv2.imwrite('march%d.jpg' % number, img)
         self.img = img
         self.number = number
-        self.mode = March.get_mode(img)
-        self.name = March.get_name(img)
-        self.situation = self.get_situation(img)
+        self.mode = get_mode(img)
+        self.name = get_name(img)
+        self.situation = get_situation(img)
         # print(number, self.mode, self.situation)
-
-    def remove_same(x: list, y: list):
-        """删除坐标list中的相似值"""
-        new_x = []
-        new_y = []
-        for num in range(0, len(x)):
-            if num != 0:
-                if abs(x[num] - x[num - 1]) > 20 or abs(y[num] - y[num - 1]) > 20:
-                    new_x.append(x[num])
-                    new_y.append(y[num])
-            else:
-                new_x.append(x[num])
-                new_y.append(y[num])
-        return new_x, new_y
-
-    def get_mode(img):
-        """获取类别"""
-        x, y = mathc_img(img, BOOK, 0.8)
-        x, y = March.remove_same(x, y)
-        # print(x)
-        string = "nothing"
-        if x:
-            string = "book"  # 指南书
-        x, y = mathc_img(img, GOLD1, 0.9)
-        x, y = March.remove_same(x, y)
-        # print(x)
-        if x:
-            string = "gold1"  # 封结晶
-        x, y = mathc_img(img, GOLD2, 0.9)
-        x, y = March.remove_same(x, y)
-        # print(x)
-        if x:
-            string = "gold2"  # 神结晶
-        x, y = mathc_img(img, CARD, 0.8)
-        x, y = March.remove_same(x, y)
-        # print(x)
-        if x:
-            string = "card"  # 绘扎
-        x, y = mathc_img(img, POWER, 0.8)
-        x, y = March.remove_same(x, y)
-        # print(x)
-        if x:
-            string = "power"  # 灵力
-        return string
-
-    def get_name(img):
-        """获取名字"""
-        return 1
-
-    def get_situation(self, img):
-        """获取状态"""
-        x1, y1 = mathc_img(img, DONE, 0.9)
-        x2, y2 = mathc_img(img, WORKING, 0.9)
-        if x1:
-            return "done"  # 状态为完成
-        elif x2:
-            return "doing"  # 状态为进行中
-        else:
-            return "available"  # 状态为可选
-
-    def cut(img):
-        """切出每个远征的小图"""
-        # 找到所以基准点
-        x, y = mathc_img(img, LV, 0.7)
-        x, y = March.remove_same(x, y)
-        # 图片切片
-        piclist = []
-        for num in range(0, len(x)):
-            y0 = y[num] - 34
-            y1 = y[num] + 186
-            x0 = x[num] - 296
-            x1 = x[num] + 907
-            piclist.append(cut_image(y0, y1, x0, x1, img))
-        return piclist
-
-    def down_swipe():
-        """下滑"""
-        swipe(1557, 261, 1560, 615, 200)
-        sleep(1)
-
-    def up_swipe():
-        """上滑"""
-        swipe(1560, 615, 1557, 261, 200)
-        sleep(1)
 
     @classmethod
     def initialize(cls, get_img=get_img):
@@ -246,16 +268,32 @@ class March:
 
         需要处在远征界面
         """
+
+        def cut(img):
+            """切出每个远征的小图"""
+            # 找到所以基准点
+            x, y = mathc_img(img, LV, 0.7)
+            x, y = remove_same(x, y)
+            # 图片切片
+            piclist = []
+            for num in range(0, len(x)):
+                y0 = y[num] - 34
+                y1 = y[num] + 186
+                x0 = x[num] - 296
+                x1 = x[num] + 907
+                piclist.append(cut_image(y0, y1, x0, x1, img))
+            return piclist
+
         # 普通远征
         click(73, 179)
-        March.up_swipe()
+        up_swipe()
         sleep(1)
-        piclist = March.cut(get_img())
+        piclist = cut(get_img())
         piclist.pop()
-        March.down_swipe()
+        down_swipe()
 
         sleep(1)
-        pic2list = March.cut(get_img())
+        pic2list = cut(get_img())
         pic2list.pop(0)
         piclist = piclist + pic2list
         sleep(1)
@@ -265,165 +303,109 @@ class March:
         # 特殊远征
         click(73, 329)
         sleep(1)
-        March.up_swipe()
+        up_swipe()
         sleep(1)
-        piclist = March.cut(get_img())
+        piclist = cut(get_img())
         if piclist:
+            # 限时远征少于3个，一次搞定
             if len(piclist) <= 3:
                 for number in range(0, len(piclist)):
                     march_list.append(cls(piclist[number], number + 5))
+            # 限时远征多于3个
             else:
-                piclist = piclist[:3]
-                March.down_swipe()
-
+                # 限时远征个数判断
+                n = number_find()
+                piclist.pop()
+                down_swipe()
                 sleep(1)
-                pic2list = March.cut(get_img())
+                pic2list = cut(get_img())
+                if n == 5:
+                    pic2list.pop(0)
+                if n == 4:
+                    pic2list.pop(0)
+                    pic2list.pop(0)
                 piclist = piclist + pic2list
                 for number in range(0, len(piclist)):
-                    march_list.append(cls(piclist[number], number + 8))
-        return march_list
-
-    def receive_done_sub(get_img=get_img):
-        """收远征完成"""
-        sleep(1)
-        for num in range(0, 3):
-            # 找完成的远征
-            x, y = mathc_img(get_img(), DONE, 0.9)
-            x, y = March.remove_same(x, y)
-            # 找到可以收的远征
-            if x:
-                click(x[0], y[0])
-                x = []
-                y = []
-                sleep(1)
-                # 找MARCHDONE
-                start = time()
-                while 1:
-                    if time() - start > 60:
-                        raise OvertimeError("receive1")
-                    x, y = mathc_img(get_img(), MARCHDONE, 0.9)
-                    if x:
-                        x = []
-                        y = []
-                        break
-                    sleep(STEP * 2)
-                # 在回到远征界面前一直点
-                start = time()
-                while 1:
-                    if time() - start > 60:
-                        raise OvertimeError("receive2")
-                    if marchfind():
-                        break
-                    click(792, 818)
-                    sleep(2)
-            else:
-                # 没远征可收
-                game_log.info("Nope")
-                return
-
-    def receive_done_main():
-        """收远征"""
-        sleep(5)
-        March.receive_done_sub()
-        March.down_swipe()
-        March.receive_done_sub()
-        click(73, 329)
-        March.receive_done_sub()
-        March.down_swipe()
-        March.receive_done_sub()
-
-    def go():
-        """进入远征界面"""
-        click(1387, 543)
-        sleep(3)
-        start = time()
-        while 1:
-            if time() - start > 60:
-                raise OvertimeError("go")
-            marchfind()
-            offlinefind()
-            if marchfind():
-                break
-            sleep(STEP * 2)
-
-    def exit():
-        """返回主界面"""
-        click_s(1559, 35)
-        start = time()
-        while 1:
-            if time() - start > 60:
-                raise OvertimeError("exit")
-            offlinefind()
-            if mainpagefind():
-                break
-            if time() - start > 10:
-                click_s(1559, 35)
-                sleep(5)
-            sleep(STEP * 2)
-
-    def select_player():
-        # 选人
-        start = time()
-        while 1:
-            if time() - start > 60:
-                raise OvertimeError("select_player1")
-            x, y = mathc_img(get_img(), ADDGIRL, 0.8)
-            x, y = March.remove_same(x, y)
-            if x:
-                click(x[0], y[0])
-                break
-        # 确定
-        start = time()
-        while 1:
-            if time() - start > 60:
-                raise OvertimeError("select_player2")
-            x, y = mathc_img(get_img(), YES, 0.8)
-            x, y = March.remove_same(x, y)
-            if x:
-                click(x[0], y[0])
-                break
-        sleep(2)
-        click(75, 186)
-        March.up_swipe()
-
-    def send_done(march):
-        """做远征"""
-        num = march.number + 1
-        click(75, 186)
-        March.up_swipe()
-        if num == 1:
-            click(576, 207)
-        elif num == 2:
-            click(560, 440)
-        elif num == 3:
-            click(599, 666)
-        elif num == 4:
-            March.down_swipe()
-            click(846, 520)
-        elif num == 5:
-            March.down_swipe()
-            click(866, 762)
-        elif num == 6:
-            click(72, 336)
-            click(576, 207)
-        elif num == 7:
-            click(72, 336)
-            click(560, 440)
-        elif num == 8:
-            click(72, 336)
-            click(599, 666)
-        elif num == 9:
-            click(72, 336)
-            March.down_swipe()
-            click(846, 520)
-        elif num == 10:
-            click(72, 336)
-            March.down_swipe()
-            click(866, 762)
-        March.select_player()
+                    march_list.append(cls(piclist[number], number + 5))
+        return march_list[0:9]
 
     def send(available_list, modelist):
         """发远征"""
+
+        def select_player():
+            # 选人
+            start = time()
+            while 1:
+                if time() - start > 60:
+                    raise OvertimeError("select_player1")
+                x, y = mathc_img(get_img(), ADDGIRL, 0.8)
+                x, y = remove_same(x, y)
+                if x:
+                    click(x[0], y[0])
+                    break
+            # 确定
+            start = time()
+            while 1:
+                if time() - start > 60:
+                    raise OvertimeError("select_player2")
+                x, y = mathc_img(get_img(), YES, 0.8)
+                x, y = remove_same(x, y)
+                if x:
+                    click(x[0], y[0])
+                    break
+            sleep(2)
+            click(75, 186)
+            up_swipe()
+
+        def send_done(march):
+            """做远征"""
+            num = march.number + 1
+            # print(num)
+            click(75, 186)
+            up_swipe()
+            # 普通远征
+            if num == 1:
+                click(576, 207)
+                return
+            elif num == 2:
+                click(560, 440)
+                return
+            elif num == 3:
+                click(599, 666)
+                return
+            else:
+                down_swipe()
+            if num == 4:
+                click(846, 520)
+                return
+            elif num == 5:
+                click(866, 762)
+                return
+            # 限时远征 前三个
+            else:
+                click(72, 336)
+            if num == 6:
+                click(576, 207)
+                return
+            elif num == 7:
+                click(560, 440)
+                return
+            elif num == 8:
+                click(599, 666)
+                return
+            else:
+                down_swipe()
+            # 限时远征 后三个
+            if num == 9:
+                click(570, 306)
+                return
+            elif num == 10:
+                click(600, 540)
+                return
+            elif num == 11:
+                click(756, 770)
+                return
+
         # 反转list
         available_list.reverse()
         # 按模式list的顺序发远征
@@ -435,27 +417,72 @@ class March:
                     return
                 # march 必须为可用 且为当前选择的mode
                 if march.situation == "available" and string in march.mode:
-                    March.send_done(march)
+                    send_done(march)
+                    select_player()
                     march.situation = "doing"
                 sleep(1)
 
     def receive():
-        March.exit()
-        March.go()
-        March.receive_done_main()
+        def receive_done_sub(get_img=get_img):
+            """收远征完成"""
+            sleep(1)
+            for num in range(0, 3):
+                # 找完成的远征
+                x, y = mathc_img(get_img(), DONE, 0.9)
+                x, y = remove_same(x, y)
+                # 找到可以收的远征
+                if x:
+                    game_log.info("RECEIVE")
+                    click(x[0], y[0])
+                    x = []
+                    y = []
+                    sleep(1)
+                    # 找MARCHDONE
+                    start = time()
+                    while 1:
+                        if time() - start > 60:
+                            raise OvertimeError("receive1")
+                        x, y = mathc_img(get_img(), MARCHDONE, 0.9)
+                        if x:
+                            x = []
+                            y = []
+                            break
+                        sleep(STEP * 2)
+                    # 在回到远征界面前一直点
+                    start = time()
+                    while 1:
+                        if time() - start > 60:
+                            raise OvertimeError("receive2")
+                        if marchfind():
+                            break
+                        click(792, 818)
+                        sleep(2)
+                # 没远征可收
+                else:
+                    return
+
+        def receive_done_main():
+            """收远征"""
+
+            sleep(5)
+            receive_done_sub()
+            down_swipe()
+            receive_done_sub()
+            click(73, 329)
+            receive_done_sub()
+            down_swipe()
+            receive_done_sub()
+
+        exit_to_main()
+        go_to_main()
+        receive_done_main()
 
     def start(sel="all"):
         """远征全家桶"""
         try:
-            March.exit()
-            if not mainpage_marchfind():
-                game_log.info("no march is done")
-                click(1472, 717)
-                sleep(3)
-                return
+            exit_to_main()
             # 道场续书
             skill_room()
-            game_log.info("march start")
             # 收远征
             March.receive()
             if sel == "receive":
@@ -467,8 +494,7 @@ class March:
             # 做远征
             March.send(march_list, modelist)
             game_log.info("march done")
-            March.exit()
-
+            exit_to_main()
             click(1472, 717)
             sleep(3)
         except OvertimeError as err:
