@@ -542,7 +542,6 @@ class Fight:
         self.mode = "time"
         self.number = tim
         tim = self.action_main()
-        game_log.info("break")
         return tim
 
     def run_number_mode(self, num: int):
@@ -550,8 +549,6 @@ class Fight:
         self.mode = "number"
         self.number = num
         tim = self.action_main()
-        if num != 1:
-            game_log.info("break")
         return tim
 
     def run_power_mode(self, power: int):
@@ -559,7 +556,6 @@ class Fight:
         self.mode = "power"
         self.number = power
         tim = self.action_main()
-        game_log.info("break")
         return tim
 
     def run_time_and_power_mode(self, number, time, power):
@@ -568,7 +564,6 @@ class Fight:
         mode_tuple = (time, power)
         self.number = mode_tuple
         tim = self.action_main()
-        game_log.info("break")
         return tim
 
 
