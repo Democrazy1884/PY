@@ -5,7 +5,7 @@ import game_log
 import cv2
 from adb import click, swipe, click_s
 from image import cut_image, mathc_img
-from sub import get_img
+from sub import get_img, Sub
 from gameerror import OvertimeError
 from universe import search
 from universe import remove_same
@@ -87,12 +87,7 @@ def mainpage_building_skill_room_point(img=get_img):
     return search(238, 260, 1418, 1430, img, SKILLROOM, 0.8)
 
 
-SKILLPOINT = cv2.imread(sys.path[0] + "\\IMG\\skillyes.jpg")
-
-
-def mainpage_building_skill_room_find(img=get_img):
-    """道场确定判断"""
-    return search(608, 656, 914, 1026, img, SKILLPOINT, 0.8)
+SKILLPOINT = cv2.imread(sys.path[0] + "\\IMG\\skillyes.jpg", 0)
 
 
 M3 = cv2.imread(sys.path[0] + "\\IMG\\3m.jpg")
@@ -125,8 +120,8 @@ def skill_room():
     # 设施有红点吗
     if not mainpage_buildingfind():
         return
-    click(800, 800)
-    sleep(5)
+    else:
+        click(800, 800, 3)
     # 道场有红点吗
     if not mainpage_building_skill_room_point():
         click(792, 772)
@@ -136,21 +131,30 @@ def skill_room():
     start = time()
     while 1:
         sleep(5)
-        x, y = mathc_img(get_img(), EXP, 0.9)
-        if time() - start > 30:
+
+        if time() - start > 40:
             break
-            # raise OvertimeError("skill_room")
-        elif mainpage_building_skill_room_find():
-            click(1342, 762)
-            sleep(3)
-            continue
-        elif x:
-            x, y = remove_same(x, y)
-            click(x[1], y[1] + 20, 2)
+            raise OvertimeError("skill_room")
+        # 道场技能150
+        point = mathc_img(get_img(), EXP, 0.8)
+        point = remove_same(point)
+        if point:
+            for p in range(0, len(point)):
+                if p[0] > 800:
+                    point
+            click(442, p[1] + 50, 2)  # 银书
             click(1322, 764, 1)
             click(992, 632, 1)
             sleep(3)
             continue
+        #  道场确定
+        point = mathc_img(get_img(), SKILLPOINT, 0.9)
+        if point:
+            point = remove_same(point)
+            click(point[0])
+            sleep(3)
+            continue
+    exit_to_main()
 
 
 def down_swipe():
@@ -165,7 +169,7 @@ def up_swipe():
     sleep(1)
 
 
-def go_to_main():
+def go_to_march():
     """进入远征界面"""
     click(1387, 543)
     sleep(3)
@@ -211,31 +215,31 @@ class March:
 
         def get_mode(img):
             """获取类别"""
-            x, y = mathc_img(img, BOOK, 0.8)
-            x, y = remove_same(x, y)
+            point = mathc_img(img, BOOK, 0.8)
+            point = remove_same(point)
             # print(x)
             string = "nothing"
-            if x:
+            if point:
                 string = "book"  # 指南书
-            x, y = mathc_img(img, GOLD1, 0.9)
-            x, y = remove_same(x, y)
+            point = mathc_img(img, GOLD1, 0.9)
+            point = remove_same(point)
             # print(x)
-            if x:
+            if point:
                 string = "gold1"  # 封结晶
-            x, y = mathc_img(img, GOLD2, 0.9)
-            x, y = remove_same(x, y)
+            point = mathc_img(img, GOLD2, 0.9)
+            point = remove_same(point)
             # print(x)
-            if x:
+            if point:
                 string = "gold2"  # 神结晶
-            x, y = mathc_img(img, CARD, 0.8)
-            x, y = remove_same(x, y)
+            point = mathc_img(img, CARD, 0.8)
+            point = remove_same(point)
             # print(x)
-            if x:
+            if point:
                 string = "card"  # 绘扎
-            x, y = mathc_img(img, POWER, 0.8)
-            x, y = remove_same(x, y)
+            point = mathc_img(img, POWER, 0.8)
+            point = remove_same(point)
             # print(x)
-            if x:
+            if point:
                 string = "power"  # 灵力
             return string
 
@@ -245,16 +249,16 @@ class March:
 
         def get_situation(img):
             """获取状态"""
-            x1, y1 = mathc_img(img, DONE, 0.9)
-            x2, y2 = mathc_img(img, WORKING, 0.9)
-            if x1:
+            point1 = mathc_img(img, DONE, 0.9)
+            point2 = mathc_img(img, WORKING, 0.9)
+            if point1:
                 return "done"  # 状态为完成
-            elif x2:
+            elif point2:
                 return "doing"  # 状态为进行中
             else:
                 return "available"  # 状态为可选
 
-        # cv2.imwrite('march%d.jpg' % number, img)
+        # cv2.imwrite("march%d.jpg" % number, img)
         self.img = img
         self.number = number
         self.mode = get_mode(img)
@@ -272,15 +276,15 @@ class March:
         def cut(img):
             """切出每个远征的小图"""
             # 找到所以基准点
-            x, y = mathc_img(img, LV, 0.7)
-            x, y = remove_same(x, y)
+            point = mathc_img(img, LV, 0.7)
+            point = remove_same(point)
             # 图片切片
             piclist = []
-            for num in range(0, len(x)):
-                y0 = y[num] - 34
-                y1 = y[num] + 186
-                x0 = x[num] - 296
-                x1 = x[num] + 907
+            for num in range(0, len(point)):
+                y0 = point[num][1] - 34
+                y1 = point[num][1] + 186
+                x0 = point[num][0] - 296
+                x1 = point[num][0] + 907
                 piclist.append(cut_image(y0, y1, x0, x1, img))
             return piclist
 
@@ -338,20 +342,20 @@ class March:
             while 1:
                 if time() - start > 60:
                     raise OvertimeError("select_player1")
-                x, y = mathc_img(get_img(), ADDGIRL, 0.8)
-                x, y = remove_same(x, y)
-                if x:
-                    click(x[0], y[0])
+                point = mathc_img(get_img(), ADDGIRL, 0.8)
+                point = remove_same(point)
+                if point:
+                    click(point[0])
                     break
             # 确定
             start = time()
             while 1:
                 if time() - start > 60:
                     raise OvertimeError("select_player2")
-                x, y = mathc_img(get_img(), YES, 0.8)
-                x, y = remove_same(x, y)
-                if x:
-                    click(x[0], y[0])
+                point = mathc_img(get_img(), YES, 0.8)
+                point = remove_same(point)
+                if point:
+                    click(point[0])
                     break
             sleep(2)
             click(75, 186)
@@ -428,24 +432,22 @@ class March:
             sleep(1)
             for num in range(0, 3):
                 # 找完成的远征
-                x, y = mathc_img(get_img(), DONE, 0.9)
-                x, y = remove_same(x, y)
+                point = mathc_img(get_img(), DONE, 0.9)
+                point = remove_same(point)
                 # 找到可以收的远征
-                if x:
+                if point:
                     game_log.info("RECEIVE")
-                    click(x[0], y[0])
-                    x = []
-                    y = []
+                    click(point[0])
+                    point = []
                     sleep(1)
                     # 找MARCHDONE
                     start = time()
                     while 1:
                         if time() - start > 60:
                             raise OvertimeError("receive1")
-                        x, y = mathc_img(get_img(), MARCHDONE, 0.9)
-                        if x:
-                            x = []
-                            y = []
+                        point = mathc_img(get_img(), MARCHDONE, 0.9)
+                        if point:
+                            point = []
                             break
                         sleep(STEP * 2)
                     # 在回到远征界面前一直点
@@ -473,8 +475,6 @@ class March:
             down_swipe()
             receive_done_sub()
 
-        exit_to_main()
-        go_to_main()
         receive_done_main()
 
     def start(sel="all"):
@@ -482,9 +482,12 @@ class March:
         try:
             exit_to_main()
             # 道场续书
-            skill_room()
+            if 1:
+                skill_room()
+            go_to_march()
             # 收远征
-            March.receive()
+            if 1:
+                March.receive()
             if sel == "receive":
                 return
             # 初始化
@@ -503,4 +506,25 @@ class March:
 
 
 if __name__ == "__main__":
-    pass
+    Sub.start()
+    while 1:
+        # 道场技能150
+        point = mathc_img(get_img(), EXP, 0.8)
+        point = remove_same(point)
+        if point:
+            for p in range(0, len(point)):
+                if p[0] > 800:
+                    p.pop()
+            # print(point)
+            click(442, point[0][1] + 50, 2)  # 银书
+            click(1322, 764, 1)
+            click(992, 632, 1)
+            sleep(3)
+            continue
+        #  道场确定
+        point = mathc_img(get_img(), SKILLPOINT, 0.9)
+        if point:
+            point = remove_same(point)
+            click(point[0])
+            sleep(3)
+            continue

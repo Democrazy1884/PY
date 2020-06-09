@@ -3,6 +3,7 @@ import subprocess
 import sys
 from time import sleep
 import random
+from functools import wraps
 
 import cv2
 
@@ -24,17 +25,56 @@ def screencap(string):
     return cv2.imread(string)
 
 
-def click(x, y, tim=0.5):
+def typeassert(func):
+    "click 输入检查"
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        tim = 0.5
+        point = [0, 0]
+        if len(args) == 1 and isinstance(args[0], (tuple, list)):
+            point = args[0]
+        elif len(args) == 2:
+            if isinstance(args[0], (tuple, list)) and isinstance(args[1], int):
+                point = args[0]
+                tim = args[1]
+            elif isinstance(args[0], int) and isinstance(args[1], int):
+                point[0] = args[0]
+                point[1] = args[1]
+            else:
+                raise TypeError
+        elif len(args) == 3:
+            if (
+                isinstance(args[0], int)
+                and isinstance(args[1], int)
+                and isinstance(args[1], int)
+            ):
+                point[0] = args[0]
+                point[1] = args[1]
+                tim = args[2]
+            else:
+                raise TypeError
+        else:
+            raise TypeError
+        return func(point, tim)
+
+    return wrapper
+
+
+@typeassert
+def click(point, tim):
     """点击"""
-    x = x + random.randint(-20, 20)
-    y = y + random.randint(-20, 20)
-    order("adb shell input tap %d %d" % (x, y))
+    order(
+        "adb shell input tap %d %d"
+        % (point[0] + random.randint(-20, 20), point[1] + random.randint(-20, 20))
+    )
     sleep(tim)
 
 
-def click_s(x, y, tim=0.5):
+@typeassert
+def click_s(point, tim):
     """精确点击"""
-    order("adb shell input tap %d %d" % (x, y))
+    order("adb shell input tap %d %d" % (point[0], point[1]))
     sleep(tim)
 
 
@@ -50,27 +90,27 @@ def attack(value):
 
 
 def card(value):
-    click(p.card_c[0], p.card_c[1], 1)
+    click(p.card_c, 1)
     if value == 1:
-        click(p.card_1[0], p.card_1[1])  # 符卡1
+        click(p.card_1)  # 符卡1
     elif value == 2:
-        click(p.card_2[0], p.card_2[1])  # 符卡2
+        click(p.card_2)  # 符卡2
     elif value == 3:
-        click(p.card_3[0], p.card_3[1])  # 符卡3
+        click(p.card_3)  # 符卡3
     elif value == 4:
-        click(p.card_4[0], p.card_4[1])  # 符卡4
+        click(p.card_4)  # 符卡4
     elif value == 5:
-        click(p.card_5[0], p.card_5[1])
+        click(p.card_5)
     sleep(1.4)
 
 
 def graze(value):
     if value >= 1:
-        click(p.graze[0], p.graze[1])  # 结界1
+        click(p.graze)  # 结界1
     if value >= 2:
-        click(p.graze[0], p.graze[1])  # 结界2
+        click(p.graze)  # 结界2
     if value >= 3:
-        click(p.graze[0], p.graze[1])  # 结界3
+        click(p.graze)  # 结界3
 
 
 ZERO = cv2.imread(sys.path[0] + "\\IMG\\zero.jpg")
@@ -98,11 +138,11 @@ def boost(value, get_img=get_img):
         value = boost_you_have
     # 输出
     if value >= 1:
-        click(p.boost[0], p.boost[1])  # boost1
+        click(p.boost)  # boost1
     if value >= 2:
-        click(p.boost[0], p.boost[1])  # boost2
+        click(p.boost)  # boost2
     if value >= 3:
-        click(p.boost[0], p.boost[1])  # boost3
+        click(p.boost)  # boost3
 
 
 def skill(value):

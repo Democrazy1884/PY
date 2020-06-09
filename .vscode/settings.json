@@ -29,6 +29,8 @@
         "opencv",
         "paramiko",
         "popen",
+        "poplistx",
+        "poplisty",
         "pylint",
         "python",
         "rgba",

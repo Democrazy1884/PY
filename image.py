@@ -45,10 +45,10 @@ def mathc_img(image, target, value=0.8):
     loc = np.where(res >= threshold)
     x = loc[1] + (w // 2)
     y = loc[0] + (h // 2)
-    x = list(x)
-    y = list(y)
-    # print(x, y)
-    return x, y
+    point = []
+    for num in range(0, len(x)):
+        point.append((x[num], y[num]))
+    return point
 
 
 def cut_image(y0, y1, x0, x1, path_image1):

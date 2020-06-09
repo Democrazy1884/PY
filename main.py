@@ -25,12 +25,12 @@ def main(sel):
             hs[i].run_time_mode(30)
             March.start()
     elif sel == 3:
-        for i in range(0, 3):
-            ykl[i].run_time_mode(30)
-            March.start()
+        ykl[1].run_power_mode(120)
+        March.start()
+    Sub.stop()
 
 
 if __name__ == "__main__":
-
     while 1:
         main(3)
+        sleep(3)

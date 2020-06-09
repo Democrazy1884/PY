@@ -2,14 +2,16 @@
 import os
 import sys
 from time import sleep, time
+
 import cv2
-from universe import search
+
 import game_log
 from adb import click  # , swipe
 from gameerror import OvertimeError, Watererror
 from group import extra, fightmod
 from image import mathc_img
 from sub import get_img
+from universe import search
 
 STEP = 0.5
 # # # # # # # # # # # # # # # # # # # # #  判断函数  # # # # # # # # # # # # # # # # # # #
@@ -81,8 +83,8 @@ WATER = cv2.imread(sys.path[0] + "\\IMG\\water.jpg", 0)
 
 def waterfind():
     "出水判定"
-    x, y = mathc_img(get_img(), WATER, 0.9)
-    if x:
+    point = mathc_img(get_img(), WATER, 0.9)
+    if point:
         return True
     else:
         return False
@@ -145,9 +147,9 @@ def selection(stage):
         elif stage == 3:
             click(1105, 612)  # 选关3
     else:
-        x, y = mathc_img(get_img(), stage, 0.9)
-        if x:
-            click(x[0], y[0])
+        point = mathc_img(get_img(), stage, 0.9)
+        if point:
+            click(point[0])
         else:  # TODO 没找到目标，去重新选择
             pass
 
@@ -355,7 +357,7 @@ def restart_program():
     os.execl(python, python, *sys.argv)
 
 
-def restart_game():
+def restart_game(self):
     "游戏重启"
     start = time()
     while 1:
@@ -376,6 +378,8 @@ def restart_game():
             click(48, 48)
         click(500, 500)
         sleep(5)
+    select_stage(self.stage)
+    select_team(self.team)
 
 
 # # # # # # # # # # # # # # # # # # # # #  主函数  # # # # # # # # # # # # # # # # # # #
@@ -416,9 +420,35 @@ class Fight:
         self.group = group  # 选战斗模式
         # 中断重启所需信息
         self.info = None
+        # 中断模式
         self.mode = None
         # 总用时
         self.all_time_use = 0
+
+    def water(f):
+        """出水错误检查"""
+
+        def inner(*args, **kwargs):
+            try:
+                ret = f(*args, **kwargs)
+            except Watererror as e:
+                game_log.error(e.type)
+            return ret
+
+        return inner
+
+    def overtime(f):
+        """ 超时错误检查"""
+
+        def inner(*args, **kwargs):
+            try:
+                ret = f(*args, **kwargs)
+            except OvertimeError as e:
+                game_log.error(e.type)
+                restart_game()
+            return ret
+
+        return inner
 
     def action_sub(self):
         "战斗函数，单次运行"
@@ -468,23 +498,29 @@ class Fight:
         if mode == "time":
             self.info = begintime
             if int(time()) - begintime > 60 * number:
+                self.info = None
                 return True
         elif mode == "number":
             self.info = n
             if n >= number:
+                self.info = None
                 return True
         elif mode == "power":
             self.info = power_use * n
             if power_use * n >= number:
+                self.info = None
                 return True
         elif mode == "time and power":
             self.info = (begintime, power_use * n)
             if int(time()) - begintime > 60 * number[0] or power_use * n >= number[1]:
+                self.info = None
                 return True
         # 循环未能结束
         end("again")
         return False
 
+    @water
+    @overtime
     def action(self):
         """
 
@@ -499,39 +535,21 @@ class Fight:
         # 选关
         select_stage(stage)
         # 选队伍
-        power_use = select_team(team)
-        self.power_use = power_use
-        # 选关选队伍用时输出
-        # game_log.info("select time:" + str(int(time()) - begintime) + "s")
+        self.power_use = select_team(team)
         while 1:
-            try:
-                # 每轮开始计时
-                starttime = int(time())
-                # 战斗
-                self.action_sub()
-                self.n += 1
-                # 结束判断
-                if self.set_end():
-                    break
-                elif self.number != 1:
-                    game_log.info("time use:" + str(int(time()) - starttime) + "s")
-                self.all_time_use = int(time()) - begintime
-            except OvertimeError as e:
-                game_log.error(e.type)
-                restart_game()
-                select_stage(stage)
-                select_team(team)
+            # 每轮开始计时
+            starttime = int(time())
+            # 战斗
+            self.action_sub()
+            self.n += 1
+            # 结束判断
+            if self.set_end():
+                break
+            elif self.number != 1:
+                game_log.info("time use:" + str(int(time()) - starttime) + "s")
+            self.all_time_use = int(time()) - begintime
         end("next")
         game_log.info("all time use:" + str(int(time()) - begintime) + "s")
-
-    def action_main(self):
-        """出水检查"""
-        try:
-            self.action()
-        except Watererror as e:
-            game_log.error(e.type)
-        finally:
-            return self.all_time_use
 
     def before_fight(self):
         "战前选择"
@@ -541,21 +559,21 @@ class Fight:
         "时间控制"
         self.mode = "time"
         self.number = tim
-        tim = self.action_main()
+        tim = self.action()
         return tim
 
     def run_number_mode(self, num: int):
         "次数控制"
         self.mode = "number"
         self.number = num
-        tim = self.action_main()
+        tim = self.action()
         return tim
 
     def run_power_mode(self, power: int):
         "油耗控制"
         self.mode = "power"
         self.number = power
-        tim = self.action_main()
+        tim = self.action()
         return tim
 
     def run_time_and_power_mode(self, number, time, power):
@@ -563,7 +581,7 @@ class Fight:
         self.mode = "time and power"
         mode_tuple = (time, power)
         self.number = mode_tuple
-        tim = self.action_main()
+        tim = self.action()
         return tim
 
 
