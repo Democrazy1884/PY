@@ -2,7 +2,6 @@
 import cv2
 import pyperclip
 
-
 global img
 global point1, point2
 

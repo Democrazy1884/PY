@@ -1,10 +1,10 @@
 # -*- coding:utf-8 -*-
 from time import sleep
 
-from adb import click, order
-from fight import offlinefind
-from march import firstpagefind, mainpagefind
-from sub import Sub
+from core.adb import click, order
+from core.fight import offlinefind
+from core.march import firstpagefind, mainpagefind
+from core.sub import Sub
 
 STEP = 0.5
 order("D:\\leidian\\LDPlayer\\dnplayer.exe")

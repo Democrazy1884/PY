@@ -1,8 +1,9 @@
 # -*- coding:utf-8 -*-
-from fight import Fight
-from sub import Sub
-from march import March
 from time import sleep
+
+from core.fight import Fight
+from core.march import March
+from core.sub import Sub
 
 # 选关 队伍 战斗组
 Youmu_test = Fight(1, 3, 2)

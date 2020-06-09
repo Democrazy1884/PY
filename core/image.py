@@ -7,6 +7,7 @@ import numpy as np
 import win32gui
 import sys
 from skimage.measure import compare_ssim as ssim
+from core.img import img_dict
 
 
 def clock(func):
@@ -20,7 +21,7 @@ def clock(func):
     return clocked
 
 
-def mathc_img(image, target, value=0.8):
+def mathc_img(image: np.ndarray, target, value=0.8):
     """图像匹配"""
 
     # 加载原始RGB图像
@@ -32,7 +33,7 @@ def mathc_img(image, target, value=0.8):
     img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
     # 加载将要搜索的图像模板
     if isinstance(target, str):
-        template = cv2.imread(target, 0)
+        template = img_dict.get(target)
     else:
         template = target
     # template = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)

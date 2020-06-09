@@ -1,15 +1,15 @@
 # -*- coding:utf-8 -*-
-import subprocess
-import sys
-from time import sleep
+"""adb调用"""
 import random
+import subprocess
 from functools import wraps
+from time import sleep
 
 import cv2
 
-import points as p
-from image import compare_image, cut_image
-from sub import get_img
+import core.points as p
+from core.sub import get_img
+from core.universe import search
 
 
 def order(orders):
@@ -113,24 +113,11 @@ def graze(value):
         click(p.graze)  # 结界3
 
 
-ZERO = cv2.imread(sys.path[0] + "\\IMG\\zero.jpg")
-ONE = cv2.imread(sys.path[0] + "\\IMG\\one.jpg")
-TWO = cv2.imread(sys.path[0] + "\\IMG\\two.jpg")
-THREE = cv2.imread(sys.path[0] + "\\IMG\\three.jpg")
-
-
-def boost(value, get_img=get_img):
+def boost(value, img=get_img):
     sleep(0.5)
-    img = cut_image(708, 731, 1324, 1348, get_img())
-    # 当前拥有的p点
-    possibility = []
-    possibility.append(compare_image(img, ZERO))
-    possibility.append(compare_image(img, ONE))
-    possibility.append(compare_image(img, TWO))
-    possibility.append(compare_image(img, THREE))
-    # 找到最接近的数字
-    boost_you_have = possibility.index(max(possibility))
-    # print(boost_you_have)
+    boost_you_have = search(708, 731, 1324, 1348, img, "BOOSTNUMBER", 0.8)
+    if boost_you_have is False:
+        search(708, 731, 1324, 1348, img, "BOOSTNUMBER", 0.8)
     # 判断
     if boost_you_have == 0:
         return

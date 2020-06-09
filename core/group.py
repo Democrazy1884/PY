@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-from adb import attack, boost, card, click, graze, skill
+from core.adb import attack, boost, card, click, graze, skill
 
 
 def extra(s):

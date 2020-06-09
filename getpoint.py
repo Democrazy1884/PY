@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 import pyperclip
 import cv2
-from image import screenshot
+from core.image import screenshot
 import time
 
 

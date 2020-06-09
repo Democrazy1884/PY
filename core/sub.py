@@ -1,9 +1,11 @@
 # -*- coding:utf-8 -*-
-import threading
 import sys
-from image import screenshot
+import threading
 from time import sleep
+
 from PyQt5.QtWidgets import QApplication
+
+from core.image import screenshot
 
 STEP = 0.3
 
@@ -22,7 +24,7 @@ def backstage(app):  # 子线程
     global img
     img = screenshot(app)
     event.done.set()
-    while True:  # 子线程
+    while 1:  # 子线程
         img = screenshot(app)
         sleep(STEP * 2)
         # print("sub working")
