@@ -1,10 +1,20 @@
 # -*- coding:utf-8 -*-
+"计划控制"
 import threading
 import queue
 
-march_job = queue.PriorityQueue()
-fight_job = queue.PriorityQueue()
-main_job = queue.PriorityQueue()
+job_queue = queue.PriorityQueue()
+
+"""job 优先级
+
+    1:错误情况
+    2:特殊情况
+    3:特殊输入
+    4:正常输入
+    5:程序输入
+    结构:
+    （优先级(页面，任务)）
+"""
 
 
 class Event:
@@ -24,38 +34,27 @@ def sub(job_list):
 class Plan:
     "计划队列"
 
-    def start():
-        pass
+    def start(job_list):
+        for job in job_list:
+            pass
 
     def stop():
-        pass
+        while 1:
+            x = job_queue.get()
+            if x:
+                pass
+            else:
+                break
 
-    def add():
-        pass
-
-    def done():
-        pass
+    def add(page, level, data):
+        job_queue.put((level, (page, data)))
 
     def get(page):
-        if page == "Main":
-            return main_job.get()
-        if page == "March":
-            return march_job.get()
-        if page == "Fight":
-            return fight_job.get()
-        else:
-            return 0
+        try:
+            return job_queue.get_nowait()
+        except queue.Empty:
+            return
 
-
-def march_plan():
-    pass
-
-
-main_job.put("march")
-march_job.put([1, 1])
 
 if __name__ == "__main__":
-    Event.remove.set()
-
-    Event.remove.wait()
-    print("yes")
+    pass

@@ -2,6 +2,7 @@ import os
 import cv2
 
 dirname = os.path.split(os.path.abspath(__file__))[0]
+
 img_dict = {
     # 选关界面判断
     "FIGHT": cv2.imread(dirname + "\\IMG\\fight.jpg"),

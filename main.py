@@ -26,7 +26,7 @@ def main(sel):
             hs[i].run_time_mode(30)
             March.start()
     elif sel == 3:
-        ykl[1].run_power_mode(120)
+        ykl[1].run_time_mode(30)
         March.start()
     Sub.stop()
 

@@ -14,7 +14,7 @@ STEP = 0.5
 
 def offlinefind(img=get_img):
     """断网判定"""
-    if search(390, 485, 626, 960, "OFFLINE", 0.9):
+    if search("OFFLINE"):
         click(963, 632)  # 断网重连操作
         game_log.warning("offline")
         sleep(10)

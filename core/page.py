@@ -5,6 +5,9 @@ from core.plan import Plan
 from core.adb import click, click_s
 from core.universe import search
 import core.march
+import core.game_log as game_log
+
+STEP = 0.5
 
 
 class Page(object):
@@ -18,23 +21,25 @@ class Page(object):
         "界面判断"
         return self._find_function()
 
+    def action(self):
+        "界面任务"
+        return self._action_function()
+
     def nextfind(self):
         "下一个界面选择"
         return self.next_page()
 
-    def action(self):
-        "界面任务"
-        self.order = Plan.get(self.name)
-        return self._action_function()
-
     def run(self):
         "界面总操作"
         while 1:
+            if search("OFFLINE"):
+                game_log.warning("offline")
+                click(963, 632)
             if self.find():
                 break
+            sleep(STEP)
         self.action()
         return self.nextfind()
-        sleep(1)
 
 
 class First(Page):
@@ -58,23 +63,26 @@ class Main(Page):
 
     def __init__(self):
         def find():
-            return search(696, 737, 1424, 1521, "MAIN", 0.8)
+            return search("MAIN")
 
         def action():
-            self.order = Plan.get("Main")
+            if search("MARCH"):
+                Plan.add(self.name, 5, "March")
+            if search("BUILDING"):
+                Plan.add(self.name, 5, "Structure")
 
         def next_page():
             order = self.order
             # 远征
-            if "march" == order:
+            if "March" == order:
                 click(1390, 536)
                 return March
             # 设施
-            if "skill" == order:
+            if "Structure" == order:
                 click(798, 786)
                 return Structure
             # 战斗
-            if "fight" == order:
+            if "Fight" == order:
                 click(1456, 722)
                 return Fight
 
@@ -89,7 +97,7 @@ class March(Page):
 
     def __init__(self):
         def find():
-            return search(13, 48, 89, 231, "MARCHPAGE", 0.8)
+            return search("MARCHPAGE")
 
         def action():
             "收"
@@ -130,10 +138,29 @@ class Structure(Page):
         self.next_page = next_page
 
 
-class Fight(Page):
+class Skillroom(Page):
+    "道场"
+
     def __init__(self):
         def find():
             pass
+
+        def action():
+            pass
+
+        def next_page():
+            return Main
+
+        self.name = "Skillroom"
+        self._action_function = action
+        self._find_function = find
+        self.next_page = Main
+
+
+class Fight(Page):
+    def __init__(self):
+        def find():
+            return search("FIGHT") or search("FIGHT1")
 
         def action():
             pass
@@ -145,3 +172,7 @@ class Fight(Page):
         self._action_function = action
         self._find_function = find
         self.next_page = next_page
+
+
+def start():
+    pass

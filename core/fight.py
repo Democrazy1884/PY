@@ -17,7 +17,7 @@ STEP = 0.5
 
 def startfind(img=get_img):
     """选关界面判断"""
-    if search(14, 50, 88, 161, "FIGHT", 0.8) or search(14, 50, 88, 161, "FIGHT1", 0.8):
+    if search("FIGHT") or search("FIGHT1"):
         return True
     else:
         return False
@@ -25,32 +25,32 @@ def startfind(img=get_img):
 
 def gofind(img=get_img):
     """选关开始界面判断"""
-    return search(754, 830, 1220, 1465, "GO", 0.8)
+    return search("GO")
 
 
 def boostfind(img=get_img):
     """找boost"""
-    return search(753, 790, 1259, 1410, "BOOST", 0.7)
+    return search("BOOST")
 
 
 def endfind(img=get_img):
     """战斗结束判断"""
-    return search(158, 216, 690, 907, "END", 0.4)
+    return search("END")
 
 
 def fullfind(img=get_img):
     """残血判定"""
-    return search(140, 150, 529, 534, "FULL", 0.8)
+    return search("FULL")
 
 
 def nextfind(img=get_img):
     "结束返回判定"
-    return search(795, 831, 1388, 1465, "NEXT", 0.8)
+    return search("NEXT")
 
 
 def againfind(img=get_img):
     """结束再开判定"""
-    return search(795, 831, 101, 181, "AGAIN", 0.8)
+    return search("AGAIN")
 
 
 def waterfind():
@@ -64,7 +64,7 @@ def waterfind():
 
 def offlinefind(flag=0):
     """断网判定"""
-    if search(390, 485, 626, 960, "OFFLINE", 0.9):
+    if search("OFFLINE"):
         game_log.warning("offline")
         sleep(10)
         click(963, 632)  # 断网重连操作
@@ -78,7 +78,7 @@ def offlinefind(flag=0):
 
 def powerfind(img=get_img):
     "油耗判定"
-    ret = search(686, 726, 1371, 1431, "POWERFIND", 0.5)
+    ret = search("POWERFIND")
     if isinstance(ret, int):
         return ret
 
@@ -110,7 +110,7 @@ def go(team):
     while 1:
         if time() - start > 60:
             raise OvertimeError("go")
-        value = search(790, 815, 723, 743, "TEAMFIND", 0.5)
+        value = search("TEAMFIND")
         value = value + 1 - team
         if value == 0:
             power_use = powerfind()
@@ -160,11 +160,11 @@ def adjust(sel):
 
     """
     while True:
-        if search(797, 824, 457, 633, "LUNATIC", 0.8):
+        if search("LUNATIC"):
             now = 3
-        elif search(797, 824, 457, 633, "HARD", 0.8):
+        elif search("HARD"):
             now = 2
-        elif search(797, 824, 457, 633, "NORMAL", 0.8):
+        elif search("NORMAL"):
             now = 1
         if now == sel:
             break
@@ -382,6 +382,53 @@ class Fight:
         # 总用时
         self.all_time_use = 0
 
+    def set_mode(self, mode, value):
+        "设置模式"
+        if mode == "time":
+            self.mode = self.run_time_mode
+            self.number = value
+        if mode == "number":
+            self.mode = self.run_number_mode
+            self.number = value
+        if mode == "power":
+            self.mode = self.run_power_mode
+            self.number = value
+        if mode == "time and power":
+            self.mode = self.run_time_and_power_mode
+            self.number = value
+
+    def run(self):
+        "启动"
+        return self.mode(self.number)
+
+    def run_time_mode(self, tim: int):
+        "时间控制"
+        self.mode = self.run_time_mode
+        self.number = tim
+        tim = self.action()
+        return tim
+
+    def run_number_mode(self, num: int):
+        "次数控制"
+        self.mode = self.run_number_mode
+        self.number = num
+        tim = self.action()
+        return tim
+
+    def run_power_mode(self, power: int):
+        "油耗控制"
+        self.mode = self.run_power_mode
+        self.number = power
+        tim = self.action()
+        return tim
+
+    def run_time_and_power_mode(self, number, time, power):
+        "油耗时间共同控制"
+        self.mode = self.run_time_and_power_mode
+        self.number = (time, power)
+        tim = self.action()
+        return tim
+
     def water(f):
         """出水错误检查"""
 
@@ -426,19 +473,19 @@ class Fight:
             self.begintime = int(time())
             self.power_use = 0
             self.n = 0
-        elif mode == "time":
+        elif mode == self.run_time_mode:
             self.begintime = info
             self.power_use = 0
             self.n = 0
-        elif mode == "power":
+        elif mode == self.run_power_mode:
             self.begintime = int(time())
             self.power_use = info
             self.n = 0
-        elif mode == "number":
+        elif mode == self.run_number_mode:
             self.begintime = int(time())
             self.power_use = 0
             self.n = info
-        elif mode == "time and power":
+        elif mode == self.run_time_and_power_mode:
             self.begintime = info[0]
             self.power_use = info[1]
             self.n = 0
@@ -452,22 +499,22 @@ class Fight:
         begintime = self.begintime
         n = self.n
         power_use = self.power_use
-        if mode == "time":
+        if mode == self.run_time_mode:
             self.info = begintime
             if int(time()) - begintime > 60 * number:
                 self.info = None
                 return True
-        elif mode == "number":
+        elif mode == self.run_number_mode:
             self.info = n
             if n >= number:
                 self.info = None
                 return True
-        elif mode == "power":
+        elif mode == self.run_power_mode:
             self.info = power_use * n
             if power_use * n >= number:
                 self.info = None
                 return True
-        elif mode == "time and power":
+        elif mode == self.run_time_and_power_mode:
             self.info = (begintime, power_use * n)
             if int(time()) - begintime > 60 * number[0] or power_use * n >= number[1]:
                 self.info = None
@@ -511,35 +558,6 @@ class Fight:
     def before_fight(self):
         "战前选择"
         return self.group.before()
-
-    def run_time_mode(self, tim: int):
-        "时间控制"
-        self.mode = "time"
-        self.number = tim
-        tim = self.action()
-        return tim
-
-    def run_number_mode(self, num: int):
-        "次数控制"
-        self.mode = "number"
-        self.number = num
-        tim = self.action()
-        return tim
-
-    def run_power_mode(self, power: int):
-        "油耗控制"
-        self.mode = "power"
-        self.number = power
-        tim = self.action()
-        return tim
-
-    def run_time_and_power_mode(self, number, time, power):
-        "油耗时间共同控制"
-        self.mode = "time and power"
-        mode_tuple = (time, power)
-        self.number = mode_tuple
-        tim = self.action()
-        return tim
 
 
 if __name__ == "__main__":
