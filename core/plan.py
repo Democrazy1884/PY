@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 import threading
-import Queue
+from queue import Queue
 
 job_list = Queue.PriorityQueue()
 
@@ -20,6 +20,8 @@ def plan():
 
 
 class Plan:
+    "计划队列"
+
     def start():
         pass
 

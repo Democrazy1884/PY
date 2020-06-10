@@ -115,9 +115,9 @@ def graze(value):
 
 def boost(value, img=get_img):
     sleep(0.5)
-    boost_you_have = search(708, 731, 1324, 1348, img, "BOOSTNUMBER", 0.8)
+    boost_you_have = search(708, 731, 1324, 1348, "BOOSTNUMBER", 0.8)
     if boost_you_have is False:
-        search(708, 731, 1324, 1348, img, "BOOSTNUMBER", 0.8)
+        search(708, 731, 1324, 1348, "BOOSTNUMBER", 0.8)
     # 判断
     if boost_you_have == 0:
         return

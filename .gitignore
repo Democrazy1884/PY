@@ -26,3 +26,10 @@ __pycache__/node.cpython-38.pyc
 x.py
 1.code-workspace
 速查.md
+core/__pycache__/__init__.cpython-38.pyc
+core/__pycache__/adb.cpython-38.pyc
+core/__pycache__/fight.cpython-38.pyc
+core/__pycache__/march.cpython-38.pyc
+core/__pycache__/page.cpython-38.pyc
+core/__pycache__/plan.cpython-38.pyc
+core/__pycache__/sub.cpython-38.pyc

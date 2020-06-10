@@ -2,7 +2,8 @@
 from core.march import March
 from core.sub import Sub
 from time import sleep
-from core.page import Main
+
+# from core.page import Main
 
 
 def main():

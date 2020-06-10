@@ -17,9 +17,7 @@ STEP = 0.5
 
 def startfind(img=get_img):
     """选关界面判断"""
-    if search(14, 50, 88, 161, "FIGHT", 0.8) or search(
-        14, 50, 88, 161, img, "FIGHT1", 0.8
-    ):
+    if search(14, 50, 88, 161, "FIGHT", 0.8) or search(14, 50, 88, 161, "FIGHT1", 0.8):
         return True
     else:
         return False
