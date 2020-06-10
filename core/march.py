@@ -385,6 +385,8 @@ class March:
                 sleep(1)
 
     def receive():
+        """收远征"""
+
         def receive_done_sub(get_img=get_img):
             """收远征完成"""
             sleep(1)

@@ -1,8 +1,10 @@
 # -*- coding:utf-8 -*-
 import threading
-from queue import Queue
+import queue
 
-job_list = Queue.PriorityQueue()
+march_job = queue.PriorityQueue()
+fight_job = queue.PriorityQueue()
+main_job = queue.PriorityQueue()
 
 
 class Event:
@@ -10,7 +12,7 @@ class Event:
     add = threading.Event()
 
 
-def plan():
+def sub(job_list):
     while 1:
         Event.remove.wait() or Event.add.wait()
         if Event.remove.isSet():
@@ -31,12 +33,26 @@ class Plan:
     def add():
         pass
 
-    def remove():
+    def done():
         pass
 
-    def get():
-        pass
+    def get(page):
+        if page == "Main":
+            return main_job.get()
+        if page == "March":
+            return march_job.get()
+        if page == "Fight":
+            return fight_job.get()
+        else:
+            return 0
 
+
+def march_plan():
+    pass
+
+
+main_job.put("march")
+march_job.put([1, 1])
 
 if __name__ == "__main__":
     Event.remove.set()
