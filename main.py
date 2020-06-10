@@ -5,6 +5,7 @@ from core.fight import Fight
 from core.march import March
 from core.sub import Sub
 
+
 # 选关 队伍 战斗组
 Youmu_test = Fight(1, 3, 2)
 Lan_2 = Fight(2, 1, 3)  # 蓝打2.4

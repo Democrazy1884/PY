@@ -52,7 +52,7 @@ def searchtypeassert(func):
             return wrapper(i[0], i[1], i[2], i[3], img_dict.get(i[4]), i[5])
         else:
             raise TypeError()
-        "单次运算返回真假"
+        # 单次运算返回真假
         if ret > value:
             return True
         else:

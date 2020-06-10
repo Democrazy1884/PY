@@ -1,13 +1,12 @@
 # -*- coding:utf-8 -*-
 import time
-import warnings
 from PyQt5.QtWidgets import QApplication
 import cv2
 import numpy as np
 import win32gui
 import sys
-from skimage.measure import compare_ssim as ssim
 from core.img import img_dict
+from skimage.metrics import structural_similarity as ssim
 
 
 def clock(func):
@@ -69,7 +68,7 @@ def compare_image(path_image1, path_image2):
         imageA = cv2.imwrite(path_image1)
     if isinstance(path_image2, str):
         imageB = cv2.imwrite(path_image2)
-    warnings.filterwarnings("ignore")
+    # warnings.filterwarnings("ignore")
     imageA = path_image1
     imageB = path_image2
 
