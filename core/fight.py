@@ -348,7 +348,7 @@ class Fight:
                 end("next")
             elif gofind():
                 click(48, 48)
-            click(500, 500)
+            click(1412, 812)
             sleep(5)
         # self.select_stage(self.stage)
         # select_team(self.team)

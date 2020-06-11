@@ -170,20 +170,19 @@ class fightmod:
             pass
 
         def fight1():
-            skill([1.1, 1.2, 1.3])
             graze(1)
-            boost(1)
-            card(5)
+            card(1)
 
         def fight2():
-            graze(1)
             boost(1)
-            attack(2)
+            graze(1)
+            card(3)
 
         def fight3():
+            skill([1.1, 1.2, 1.3])
+            boost(3)
             graze(1)
-            boost(1)
-            attack(2)
+            card(5)
             return extra
 
         def extra():

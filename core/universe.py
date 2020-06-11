@@ -5,6 +5,7 @@ from functools import wraps
 from core.image import compare_image, cut_image
 from core.sub import get_img
 from core.img import img_dict
+from time import sleep
 
 
 def manhattan_dist(p, q):
@@ -41,7 +42,8 @@ def searchtypeassert(func):
                     ret_list.append(func(args[0], args[1], args[2], args[3], mode_img))
                 ret = max(ret_list)
                 if ret < value:
-                    return wrapper(args[0], args[1], args[2], args[3], args[4], args[5])
+                    sleep(1)
+                    return False
                 else:
                     return ret_list.index(ret)
             else:
