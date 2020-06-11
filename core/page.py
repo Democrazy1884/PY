@@ -4,7 +4,7 @@ from time import sleep
 from core.plan import Plan
 from core.adb import click, click_s
 from core.universe import search
-import core.march
+from core.march import March_action
 import core.game_log as game_log
 
 STEP = 0.5
@@ -102,12 +102,10 @@ class March(Page):
         def action():
             "收"
             if self.order[0]:
-                core.march.March.receive()
+                pass
             "发"
             if self.order[1]:
-                march_list = core.march.March.initialize()
-                modelist = ["gold2", "gold1", "power", "card", "book", "nothing"]
-                core.march.March.send(march_list, modelist)
+                pass
 
         def next_page():
             click_s(1559, 35)
@@ -159,6 +157,7 @@ class Skillroom(Page):
 
 class Fight(Page):
     "战斗界面"
+
     def __init__(self):
         def find():
             return search("FIGHT") or search("FIGHT1")
