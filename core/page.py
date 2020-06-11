@@ -77,10 +77,6 @@ class Main(Page):
             if "March" == order:
                 click(1390, 536)
                 return March
-            # 设施
-            if "Structure" == order:
-                click(798, 786)
-                return Structure
             # 战斗
             if "Fight" == order:
                 click(1456, 722)
@@ -100,12 +96,20 @@ class March(Page):
             return search("MARCHPAGE")
 
         def action():
+            March = March_action()
+            March.skill_room = False
+            March.send_march = False
+            March.receive_march = False
             "收"
             if self.order[0]:
-                pass
+                March.receive_march = True
             "发"
             if self.order[1]:
-                pass
+                March.receive_march = True
+            "技能书"
+            if self.order[2]:
+                March.skill_room = True
+            March.start()
 
         def next_page():
             click_s(1559, 35)
@@ -115,44 +119,6 @@ class March(Page):
         self._action_function = action
         self._find_function = find
         self.next_page = next_page
-
-
-class Structure(Page):
-    "设施界面"
-
-    def __init__(self):
-        def find():
-            pass
-
-        def action():
-            pass
-
-        def next_page():
-            return Main
-
-        self.name = "Structure"
-        self._action_function = action
-        self._find_function = find
-        self.next_page = next_page
-
-
-class Skillroom(Page):
-    "道场"
-
-    def __init__(self):
-        def find():
-            pass
-
-        def action():
-            pass
-
-        def next_page():
-            return Main
-
-        self.name = "Skillroom"
-        self._action_function = action
-        self._find_function = find
-        self.next_page = Main
 
 
 class Fight(Page):

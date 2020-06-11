@@ -18,17 +18,3 @@ order(
 )
 # 开始界面判断
 sleep(10)
-while True:
-    if firstpagefind():
-        click(500, 500)
-        break
-    offlinefind()
-    sleep(STEP)
-# 主页判断
-while True:
-    if mainpagefind():
-        break
-    offlinefind()
-    sleep(STEP)
-
-# TODO 红点判断 1技能 2打工 3寺子屋 4战斗

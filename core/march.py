@@ -1,7 +1,6 @@
 # -*- coding:utf-8 -*-
 from time import sleep, time
 
-
 import core.game_log as game_log
 from core.adb import click, click_s, swipe
 from core.gameerror import OvertimeError
@@ -457,6 +456,7 @@ class March_action:
                 skill_room()
             if not mainpage_marchfind():
                 game_log.info("no march is done")
+                click(1472, 717)
                 return
             go_to_march()
             # 收远征
