@@ -143,7 +143,7 @@ def skill(value):
         elif value[i] == 1.2:
             click(368, 741)
         elif value[i] == 1.3:
-            click(748, 741)
+            click(476, 742)
         elif value[i] == 2.1:
             click(687, 741)
         elif value[i] == 2.2:

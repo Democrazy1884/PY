@@ -2,7 +2,6 @@
 import os
 import sys
 from time import sleep, time
-from functools import wraps
 import core.game_log as game_log
 from core.adb import click  # , swipe
 from core.gameerror import OvertimeError, Watererror
@@ -314,31 +313,6 @@ def restart_program():
     os.execl(python, python, *sys.argv)
 
 
-def restart_game(self):
-    "游戏重启"
-    start = time()
-    while 1:
-        if time() - start > 120:
-            restart_program()
-        if startfind():
-            break
-        elif offlinefind():
-            pass
-        elif boostfind():
-            click(858, 34)  # 强行中断战斗
-            sleep(2)
-            click(1408, 808)
-            click(992, 628)
-        elif endfind():
-            end("next")
-        elif gofind():
-            click(48, 48)
-        click(500, 500)
-        sleep(5)
-    select_stage(self.stage)
-    select_team(self.team)
-
-
 # # # # # # # # # # # # # # # # # # # # #  主函数  # # # # # # # # # # # # # # # # # # #
 
 
@@ -381,6 +355,30 @@ class Fight:
         self.mode = None
         # 总用时
         self.all_time_use = 0
+
+    def restart_game(self):
+        "游戏重启"
+        start = time()
+        while 1:
+            if time() - start > 120:
+                restart_program()
+            if startfind():
+                break
+            elif offlinefind():
+                pass
+            elif boostfind():
+                click(858, 34)  # 强行中断战斗
+                sleep(2)
+                click(1408, 808)
+                click(992, 628)
+            elif endfind():
+                end("next")
+            elif gofind():
+                click(48, 48)
+            click(500, 500)
+            sleep(5)
+        select_stage(self.stage)
+        select_team(self.team)
 
     def set_mode(self, mode, value):
         "设置模式"
@@ -438,6 +436,7 @@ class Fight:
                 return ret
             except Watererror as e:
                 game_log.error(e.type)
+                return
 
         return inner
 
@@ -450,7 +449,7 @@ class Fight:
                 return ret
             except OvertimeError as e:
                 game_log.error(e.type)
-                restart_game()
+                args[0].restart_game()
 
         return inner
 

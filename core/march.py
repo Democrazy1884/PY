@@ -296,7 +296,7 @@ class March_action:
     "远征操作"
 
     def __init__(self):
-        self.skill = True
+        self.skill_room = True
         self.receive_march = True
         self.send_march = True
 
