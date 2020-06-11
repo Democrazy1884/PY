@@ -173,13 +173,13 @@ class fightmod:
             skill([1.1, 1.2])
             graze(1)
             boost(1)
-            card(2)
+            card(1)
             return 1
 
         def fight2():
             graze(1)
             boost(2)
-            card(4)
+            card(2)
             return 1
 
         def fight3():
@@ -191,8 +191,8 @@ class fightmod:
         def extra():
             graze(1)
             boost(3)
-            card(1)
-            return 1
+            attack(2)
+            return extra
 
         fight = (fight1, fight2, fight3)
         return cls(mode, stage, fight, before_fight)

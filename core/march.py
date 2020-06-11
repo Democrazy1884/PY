@@ -291,7 +291,16 @@ class March:
                     march_list.append(cls(piclist[number], number + 5))
         return march_list[0:9]
 
-    def send(available_list, modelist):
+
+class March_action:
+    "远征操作"
+
+    def __init__(self):
+        self.skill = True
+        self.receive_march = True
+        self.send_march = True
+
+    def send(self, available_list, modelist):
         """发远征"""
 
         def select_player():
@@ -384,7 +393,7 @@ class March:
                     march.situation = "doing"
                 sleep(1)
 
-    def receive():
+    def receive(self):
         """收远征"""
 
         def receive_done_sub(get_img=get_img):
@@ -437,27 +446,34 @@ class March:
 
         receive_done_main()
 
-    def start(sel="all"):
+    def start(self):
         """远征全家桶"""
+        if not (self.skill_room or self.receive_march or self.send_march):
+            return
         try:
             exit_to_main()
             # 道场续书
-            if 1:
+            if self.skill_room:
                 skill_room()
-            if not mainpage_marchfind() and 1:
+            if not mainpage_marchfind():
                 game_log.info("no march is done")
+                # return
             go_to_march()
             # 收远征
-            if 1:
-                March.receive()
-            if sel == "receive":
+            if self.receive_march:
+                self.receive()
+            # 发远征
+            if not self.send_march:
+                exit_to_main()
+                click(1472, 717)
+                sleep(3)
                 return
             # 初始化
             march_list = March.initialize()
             # 远征优先级
             modelist = ["gold2", "gold1", "power", "card", "book", "nothing"]
             # 做远征
-            March.send(march_list, modelist)
+            self.send(march_list, modelist)
             game_log.info("march done")
             exit_to_main()
             click(1472, 717)

@@ -10,7 +10,7 @@ from core.sub import Sub
 Youmu_test = Fight(1, 3, 2)
 Lan_2 = Fight(2, 1, 3)  # 蓝打2.4
 hs = (Fight(1, 4, 4), Fight(1, 3, 4), Fight(1, 2, 4))  # 刷华扇1.3.3
-ykl = (Fight(1, 5, 5), Fight(1, 1, 4))
+ykl = [Fight(1, 3, 4), Fight(1, 5, 5), Fight(1, 1, 4)]
 
 
 def main(sel):
@@ -27,8 +27,9 @@ def main(sel):
             hs[i].run_time_mode(30)
             March.start()
     elif sel == 3:
-        ykl[1].run_time_mode(30)
-        March.start()
+        for i in ykl:
+            i.run_time_mode(30)
+            March.start()
     Sub.stop()
 
 

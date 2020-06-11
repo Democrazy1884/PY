@@ -2,7 +2,7 @@
 import os
 import sys
 from time import sleep, time
-
+from functools import wraps
 import core.game_log as game_log
 from core.adb import click  # , swipe
 from core.gameerror import OvertimeError, Watererror
