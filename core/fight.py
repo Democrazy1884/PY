@@ -9,6 +9,7 @@ from core.group import extra, fightmod
 from core.image import mathc_img
 from core.sub import get_img
 from core.universe import search
+from retrying import retry
 
 STEP = 0.5
 # # # # # # # # # # # # # # # # # # # # #  判断函数  # # # # # # # # # # # # # # # # # # #
@@ -349,8 +350,8 @@ class Fight:
                 click(48, 48)
             click(500, 500)
             sleep(5)
-        self.select_stage(self.stage)
-        select_team(self.team)
+        # self.select_stage(self.stage)
+        # select_team(self.team)
 
     def select_stage(self, number):
         """选关"""
@@ -487,10 +488,12 @@ class Fight:
                 return ret
             except Watererror as e:
                 game_log.error(e.type)
+                sleep(5)
                 return
 
         return inner
 
+    @retry
     def overtime(f):
         """ 超时错误检查"""
 
@@ -501,6 +504,7 @@ class Fight:
             except OvertimeError as e:
                 game_log.error(e.type)
                 args[0].restart_game()
+                sleep(5)
 
         return inner
 
@@ -535,8 +539,8 @@ class Fight:
             end("again")
             return False
 
-    @water
     @overtime
+    @water
     def action(self):
         """
 
