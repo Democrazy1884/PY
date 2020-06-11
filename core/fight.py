@@ -16,10 +16,7 @@ STEP = 0.5
 
 def startfind(img=get_img):
     """选关界面判断"""
-    if search("FIGHT") or search("FIGHT1"):
-        return True
-    else:
-        return False
+    return search("FIGHT") or search("FIGHT1")
 
 
 def gofind(img=get_img):
@@ -83,23 +80,6 @@ def powerfind(img=get_img):
 
 
 # # # # # # # # # # # # # # # # # # # # #  初级操作函数  # # # # # # # # # # # # # # # # # # #
-
-
-def selection(stage):
-    """选关"""
-    if isinstance(stage, int):
-        if stage == 1:
-            click(1105, 231)  # 选关1
-        elif stage == 2:
-            click(1105, 426)  # 选关2
-        elif stage == 3:
-            click(1105, 612)  # 选关3
-    else:
-        point = mathc_img(get_img(), stage, 0.9)
-        if point:
-            click(point[0])
-        else:  # TODO 没找到目标，去重新选择
-            pass
 
 
 def go(team):
@@ -169,20 +149,6 @@ def adjust(sel):
             break
         else:
             click(541, 808)
-
-
-def select_stage(number):
-    """选关"""
-    start = time()
-    while 1:
-        if time() - start > 60:
-            raise OvertimeError("stage")
-        offlinefind(1)
-        if startfind():
-            selection(number)
-            sleep(2)
-            break
-        sleep(STEP * 2)
 
 
 def select_team(number):
@@ -353,8 +319,14 @@ class Fight:
         self.info = None
         # 中断模式
         self.mode = None
+        # 模式结束判断所用数值
+        self.mode_number = None
+        # 错误中断后启动赋值
+        self.mode_start = None
+        # 模式结束方法
+        self.mode_end = None
         # 总用时
-        self.all_time_use = 0
+        self.all_time_use = None
 
     def restart_game(self):
         "游戏重启"
@@ -377,53 +349,132 @@ class Fight:
                 click(48, 48)
             click(500, 500)
             sleep(5)
-        select_stage(self.stage)
+        self.select_stage(self.stage)
         select_team(self.team)
+
+    def select_stage(self, number):
+        """选关"""
+
+        def selection(stage):
+            if isinstance(stage, int):
+                if stage == 1:
+                    click(1105, 231)  # 选关1
+                elif stage == 2:
+                    click(1105, 426)  # 选关2
+                elif stage == 3:
+                    click(1105, 612)  # 选关3
+            else:
+                point = mathc_img(get_img(), stage, 0.9)
+                if point:
+                    click(point[0])
+                else:  # TODO 没找到目标，去重新选择
+                    self.before_fight()
+                    self.select_stage(self, number)
+
+        start = time()
+        while 1:
+            if time() - start > 60:
+                raise OvertimeError("stage")
+            offlinefind(1)
+            if startfind():
+                selection(number)
+                sleep(2)
+                break
+            sleep(STEP * 2)
 
     def set_mode(self, mode, value):
         "设置模式"
         if mode == "time":
             self.mode = self.run_time_mode
-            self.number = value
         if mode == "number":
             self.mode = self.run_number_mode
-            self.number = value
         if mode == "power":
             self.mode = self.run_power_mode
-            self.number = value
         if mode == "time and power":
             self.mode = self.run_time_and_power_mode
-            self.number = value
+        self.mode_number = value
 
     def run(self):
         "启动"
-        return self.mode(self.number)
+        return self.mode(self.mode_number)
 
     def run_time_mode(self, tim: int):
         "时间控制"
+
+        def mode_start():
+            self.begintime = self.info
+
+        def mode_end():
+            self.info = self.begintime
+            if int(time()) - self.begintime > 60 * self.mode_number:
+                self.info = None
+                return True
+
         self.mode = self.run_time_mode
-        self.number = tim
+        self.mode_number = tim
+        self.mode_start = mode_start
+        self.mode_end = mode_end
         tim = self.action()
         return tim
 
     def run_number_mode(self, num: int):
         "次数控制"
+
+        def mode_start():
+            self.n = self.info
+
+        def mode_end():
+            self.info = self.n
+            if self.n >= self.mode_number:
+                self.info = None
+                return True
+
         self.mode = self.run_number_mode
-        self.number = num
+        self.mode_number = num
+        self.mode_start = mode_start
+        self.mode_end = mode_end
         tim = self.action()
         return tim
 
     def run_power_mode(self, power: int):
         "油耗控制"
+
+        def mode_start():
+            self.power_use = self.info
+
+        def mode_end():
+            self.info = self.power_use * self.n
+            if self.power_use * self.n >= self.mode_number:
+                self.info = None
+                return True
+
         self.mode = self.run_power_mode
-        self.number = power
+        self.mode_number = power
+        self.mode_start = mode_start
+        self.mode_end = mode_end
         tim = self.action()
         return tim
 
     def run_time_and_power_mode(self, number, time, power):
         "油耗时间共同控制"
+
+        def mode_start():
+            self.begintime = self.info[0]
+            self.power_use = self.info[1]
+
+        def mode_end():
+            self.info = (self.begintime, self.power_use * self.n)
+            if (
+                int(time()) - self.begintime > 60 * self.mode_number[0]
+                or self.power_use * self.n >= self.mode_number[1]
+            ):
+                self.info = None
+                return True
+
         self.mode = self.run_time_and_power_mode
-        self.number = (time, power)
+        self.mode_number = (time, power)
+        self.mode_start = mode_start
+        self.mode_end = mode_end
         tim = self.action()
         return tim
 
@@ -453,6 +504,18 @@ class Fight:
 
         return inner
 
+    def set_start(self):
+        "开始阶段赋初值"
+        info = self.info
+        stage = self.group.stage
+        self.begintime = int(time())
+        self.power_use = 0
+        self.n = 0
+        if info is not None:
+            self.mode_start()
+        if stage != "default":
+            self.stage = stage
+
     def action_sub(self):
         "战斗函数，单次运行"
         group = self.group
@@ -463,64 +526,14 @@ class Fight:
             fightway = wave3
         fightway(group)  # 战斗
 
-    def set_start(self):
-        "开始阶段赋初值"
-        info = self.info
-        mode = self.mode
-        stage = self.group.stage
-        if info is None:
-            self.begintime = int(time())
-            self.power_use = 0
-            self.n = 0
-        elif mode == self.run_time_mode:
-            self.begintime = info
-            self.power_use = 0
-            self.n = 0
-        elif mode == self.run_power_mode:
-            self.begintime = int(time())
-            self.power_use = info
-            self.n = 0
-        elif mode == self.run_number_mode:
-            self.begintime = int(time())
-            self.power_use = 0
-            self.n = info
-        elif mode == self.run_time_and_power_mode:
-            self.begintime = info[0]
-            self.power_use = info[1]
-            self.n = 0
-        if stage != "default":
-            self.stage = stage
-
     def set_end(self):
         """循环结束判断"""
-        mode = self.mode
-        number = self.number
-        begintime = self.begintime
-        n = self.n
-        power_use = self.power_use
-        if mode == self.run_time_mode:
-            self.info = begintime
-            if int(time()) - begintime > 60 * number:
-                self.info = None
-                return True
-        elif mode == self.run_number_mode:
-            self.info = n
-            if n >= number:
-                self.info = None
-                return True
-        elif mode == self.run_power_mode:
-            self.info = power_use * n
-            if power_use * n >= number:
-                self.info = None
-                return True
-        elif mode == self.run_time_and_power_mode:
-            self.info = (begintime, power_use * n)
-            if int(time()) - begintime > 60 * number[0] or power_use * n >= number[1]:
-                self.info = None
-                return True
-        # 循环未能结束
-        end("again")
-        return False
+        if self.mode_end():
+            return True
+        else:
+            # 循环未能结束
+            end("again")
+            return False
 
     @water
     @overtime
@@ -536,7 +549,7 @@ class Fight:
         stage = self.stage
         team = self.team
         # 选关
-        select_stage(stage)
+        self.select_stage(stage)
         # 选队伍
         self.power_use = select_team(team)
         while 1:
@@ -548,7 +561,7 @@ class Fight:
             # 结束判断
             if self.set_end():
                 break
-            elif self.number != 1:
+            elif self.mode_number != 1:
                 game_log.info("time use:" + str(int(time()) - starttime) + "s")
             self.all_time_use = int(time()) - begintime
         end("next")

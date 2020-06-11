@@ -158,6 +158,7 @@ class Skillroom(Page):
 
 
 class Fight(Page):
+    "战斗界面"
     def __init__(self):
         def find():
             return search("FIGHT") or search("FIGHT1")

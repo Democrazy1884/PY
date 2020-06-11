@@ -457,7 +457,7 @@ class March_action:
                 skill_room()
             if not mainpage_marchfind():
                 game_log.info("no march is done")
-                # return
+                return
             go_to_march()
             # 收远征
             if self.receive_march:
@@ -480,7 +480,7 @@ class March_action:
             sleep(3)
         except OvertimeError as err:
             game_log.error(err.type)
-            March.start()
+            self.start()
 
 
 if __name__ == "__main__":
