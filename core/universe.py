@@ -5,7 +5,6 @@ from functools import wraps
 from core.image import compare_image, cut_image
 from core.sub import get_img
 from core.img import img_dict
-from time import sleep
 
 
 def manhattan_dist(p, q):
@@ -25,46 +24,48 @@ def searchtypeassert(func):
 
     @wraps(func)
     def wrapper(*args, **kwargs):
-        # 长度为6时
-        if len(args) == 6:
-            value = args[5]
+        def turn(y0, y1, x0, x1, img, value):
             # 输入为图像
-            if isinstance(args[4], np.ndarray):
-                ret = func(args[0], args[1], args[2], args[3], args[4])
-            # 输入为字符串
-            elif isinstance(args[4], str):
-                mode_img = img_dict.get(args[4])
-                return wrapper(args[0], args[1], args[2], args[3], mode_img, args[5])
+            if isinstance(img, np.ndarray):
+                ret = func(y0, y1, x0, x1, img)
+                if ret > value:
+                    return True
+                else:
+                    return False
             # 输入为tuple时
-            elif isinstance(args[4], tuple):
+            elif isinstance(img, tuple):
                 ret_list = []
-                for mode_img in args[4]:
-                    ret_list.append(func(args[0], args[1], args[2], args[3], mode_img))
+                for mode_img in img:
+                    ret_list.append(func(y0, y1, x0, x1, mode_img))
                 ret = max(ret_list)
                 if ret < value:
-                    sleep(1)
                     return False
                 else:
                     return ret_list.index(ret)
             else:
                 raise TypeError()
-        # 单个输入时
+
+        # 6个参数
+        if len(args) == 6:
+            if isinstance(args[4], str):
+                img = img_dict.get(args[4])
+                return turn(args[0], args[1], args[2], args[3], img, args[5])
+            elif isinstance(args[4], (np.ndarray, tuple)):
+                return turn(args[0], args[1], args[2], args[3], args[4], args[5])
+            else:
+                raise TypeError()
+        # 1个参数
         elif len(args) == 1 and isinstance(args[0], str):
             i = search_dict.get(args[0])
-            return wrapper(i[0], i[1], i[2], i[3], img_dict.get(i[4]), i[5])
+            return turn(i[0], i[1], i[2], i[3], img_dict.get(i[4]), i[5])
         else:
             raise TypeError()
-        # 单次运算返回真假
-        if ret > value:
-            return True
-        else:
-            return False
 
     return wrapper
 
 
 @searchtypeassert
-def search(y0, y1, x0, x1, mode_img: np.ndarray):
+def search(y0, y1, x0, x1, mode_img):
     """通用图像对比
 
     Args:
@@ -73,7 +74,7 @@ def search(y0, y1, x0, x1, mode_img: np.ndarray):
         value (float): 相似度
 
     Returns:
-        [float]: [符合返回真，不符合返回假]
+        (bool): [符合返回真，不符合返回假]
     """
     cut_img = cut_image(y0, y1, x0, x1, get_img())
     return compare_image(cut_img, mode_img)
@@ -106,6 +107,8 @@ def remove_same(point: list):
 
 
 search_dict = {
+    # boost数量判断
+    "BOOSTNUMBER": (708, 731, 1324, 1348, "BOOSTNUMBER", 0.8),
     # 断网
     "OFFLINE": (390, 485, 626, 960, "OFFLINE", 0.9),
     # 选关界面判断
@@ -146,4 +149,7 @@ search_dict = {
     "SKILLROOM": (238, 260, 1418, 1430, "SKILLROOM", 0.8),
     # 三个远征满了判断
     "M3": (812, 854, 122, 146, "M3", 0.75),
+    # 限时远征个数判断
+    "TEAM4": (761, 781, 1553, 1564, "TEAM4", 0.8),
+    "TEAM5": (632, 646, 1552, 1564, "TEAM5", 0.8),
 }

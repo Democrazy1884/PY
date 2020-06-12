@@ -24,44 +24,44 @@ def offlinefind(img=get_img):
 
 def firstpagefind(img=get_img):
     "初始界面判断"
-    return search(839, 884, 12, 774, "FIRST", 0.5)
+    return search("FIRST")
 
 
 def marchfind(img=get_img):
     """远征界面判断"""
-    return search(13, 48, 89, 231, "MARCHPAGE", 0.8)
+    return search("MARCHPAGE")
 
 
 def mainpage_marchfind(img=get_img):
     """主界面远征判断"""
-    return search(480, 502, 1415, 1445, "MARCH", 0.8)
+    return search("MARCH")
 
 
 def mainpagefind(img=get_img):
     """主界面判断"""
-    return search(696, 737, 1424, 1521, "MAIN", 0.8)
+    return search("MAIN")
 
 
 def mainpage_buildingfind(img=get_img):
     """设施红点判断"""
-    return search(754, 770, 880, 900, "BUILDING", 0.8)
+    return search("BUILDING")
 
 
 def mainpage_building_skill_room_point(img=get_img):
     """道场红点判断"""
-    return search(238, 260, 1418, 1430, "SKILLROOM", 0.8)
+    return search("SKILLROOM")
 
 
 def fullfind(img=get_img):
     """三个远征满了判断"""
-    return search(812, 854, 122, 146, "M3", 0.75)
+    return search("M3")
 
 
 def number_find(img=get_img):
     """远征个数判断"""
-    if search(761, 781, 1553, 1564, "TEAM4", 0.8):
+    if search("TEAM4"):
         return 4
-    elif search(632, 646, 1552, 1564, "TEAM5", 0.8):
+    elif search("TEAM5"):
         return 5
     else:
         up_swipe()

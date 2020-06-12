@@ -4,7 +4,6 @@ import threading
 from time import sleep
 
 from PyQt5.QtWidgets import QApplication
-
 from core.image import screenshot
 
 STEP = 0.3

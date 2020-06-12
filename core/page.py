@@ -47,7 +47,7 @@ class First(Page):
 
     def __init__(self):
         def find():
-            return search(839, 884, 12, 774, "FIRST", 0.5)
+            return search("FIRST")
 
         def action():
             click(500, 500)
@@ -132,7 +132,7 @@ class Fight(Page):
             pass
 
         def next_page():
-            return
+            return Main
 
         self.name = "Fight"
         self._action_function = action
