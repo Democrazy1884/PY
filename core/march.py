@@ -294,10 +294,25 @@ class March:
 class March_action:
     "远征操作"
 
-    def __init__(self):
-        self.skill_room = True
-        self.receive_march = True
-        self.send_march = True
+    def __init__(self, skill=True, receive=True, send=True):
+        self.skill_room = skill
+        self.receive_march = receive
+        self.send_march = send
+
+    @classmethod
+    def only_skill(cls):
+        """只续技能书"""
+        return cls(1, 0, 0)
+
+    @classmethod
+    def only_receive(cls):
+        """只收远征"""
+        return cls(0, 1, 0)
+
+    @classmethod
+    def only_send(cls):
+        """只发远征"""
+        return cls(0, 0, 1)
 
     def send(self, available_list, modelist):
         """发远征"""
@@ -450,14 +465,18 @@ class March_action:
         if not (self.skill_room or self.receive_march or self.send_march):
             return
         try:
-            exit_to_main()
             # 道场续书
+            exit_to_main()
             if self.skill_room:
                 skill_room()
+                sleep(3)
             if not mainpage_marchfind():
-                game_log.info("no march is done")
-                click(1472, 717)
-                return
+                mode = (self.receive_march, self.send_march)
+                # 在"收+发"和"收"模式时,如果没有远征可以收就退出远征模式
+                if mode == (1, 1) or mode == (1, 0):
+                    game_log.info("no march is done")
+                    click(1472, 717)
+                    return
             go_to_march()
             # 收远征
             if self.receive_march:

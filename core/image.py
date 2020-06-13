@@ -61,25 +61,19 @@ def cut_image(y0, y1, x0, x1, path_image1):
     return cropped
 
 
-def compare_image(path_image1, path_image2):
+def compare_image(imageA, imageB):
     """图片比较"""
-
-    if isinstance(path_image1, str):
-        imageA = cv2.imwrite(path_image1)
-    if isinstance(path_image2, str):
-        imageB = cv2.imwrite(path_image2)
-    # warnings.filterwarnings("ignore")
-    imageA = path_image1
-    imageB = path_image2
-
+    if isinstance(imageA, str):
+        imageA = cv2.imwrite(imageA)
+    if isinstance(imageB, str):
+        imageB = cv2.imwrite(imageB)
+    # cv2.imwrite("1.jpg", imageA)
+    # cv2.imwrite("2.jpg", imageB)
     grayA = cv2.cvtColor(imageA, cv2.COLOR_BGR2GRAY)
     grayB = cv2.cvtColor(imageB, cv2.COLOR_BGR2GRAY)
-
     (score, diff) = ssim(grayA, grayB, full=True, multichannel=True)
     # print("SSIM: {}".format(score))
     return score
-    # compare_image = CompareImage()
-    # compare_image.compare_image("1.png", "2.png")
 
 
 app = QApplication(sys.argv)

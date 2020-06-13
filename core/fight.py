@@ -5,11 +5,12 @@ from time import sleep, time
 import core.game_log as game_log
 from core.adb import click  # , swipe
 from core.gameerror import OvertimeError, Watererror
-from core.group import extra, fightmod
+from core.group import extra, fightmod, fightmod_dict
 from core.image import mathc_img
 from core.sub import get_img
 from core.universe import search
 from retrying import retry
+import numpy as np
 
 STEP = 0.5
 # # # # # # # # # # # # # # # # # # # # #  判断函数  # # # # # # # # # # # # # # # # # # #
@@ -63,11 +64,11 @@ def offlinefind(flag=0):
     """断网判定"""
     if search("OFFLINE"):
         game_log.warning("offline")
-        sleep(10)
         click(963, 632)  # 断网重连操作
         sleep(10)
-        if flag == 1:
-            end("next")
+        offlinefind()
+        # if flag == 1:
+        #   end("next")
         return True
     else:
         return False
@@ -283,19 +284,6 @@ def restart_program():
 # # # # # # # # # # # # # # # # # # # # #  主函数  # # # # # # # # # # # # # # # # # # #
 
 
-d = {
-    1: fightmod.mode1,
-    2: fightmod.mode2,
-    3: fightmod.mode3,
-    4: fightmod.mode4,
-    5: fightmod.mode5,
-    6: fightmod.mode6,
-    7: fightmod.mode7,
-    8: fightmod.mode8,
-    9: fightmod.mode9,
-}
-
-
 class Fight:
     """
     战斗类
@@ -306,28 +294,42 @@ class Fight:
 
     group(战斗模式选择)
 
+    mode(战斗模式)
+
+    num(模式赋值)
+
     """
 
-    def __init__(self, stage: int, team: int, group: int):
+    def __init__(
+        self,
+        stage: (int, np.ndarray),
+        team: int,
+        group: (int, fightmod),
+        mode="time",
+        num="30",
+    ):
         if isinstance(group, int):
-            group = d[group]()  # 初始化战斗组对象
-        else:
-            pass  # TODO 其它的读取方法，从json读啥的
+            group = fightmod_dict[group]()  # 初始化战斗组对象
+        elif isinstance(group, fightmod):
+            pass
         self.stage = stage  # 选关
         self.team = team  # 选队伍
         self.group = group  # 选战斗模式
         # 中断重启所需信息
         self.info = None
-        # 中断模式
-        self.mode = None
-        # 模式结束判断所用数值
-        self.mode_number = None
-        # 错误中断后启动赋值
+        # 错误中断后启动赋值方法
         self.mode_start = None
         # 模式结束方法
         self.mode_end = None
         # 总用时
-        self.all_time_use = None
+        self.all_time_use = 0
+        # 中断模式
+        # 模式结束判断所用数值
+        self.set_mode(mode, num)
+
+    def reinitialize(self):
+        "重新初始化"
+        self.all_time_use = 0
 
     def restart_game(self):
         "游戏重启"
@@ -348,7 +350,9 @@ class Fight:
                 end("next")
             elif gofind():
                 click(48, 48)
-            click(1412, 812)
+            elif againfind():
+                click(1412, 812)
+            click(500, 500)
             sleep(5)
         # self.select_stage(self.stage)
         # select_team(self.team)
@@ -368,7 +372,7 @@ class Fight:
                 point = mathc_img(get_img(), stage, 0.9)
                 if point:
                     click(point[0])
-                else:  # TODO 没找到目标，去重新选择
+                else:
                     self.before_fight()
                     self.select_stage(self, number)
 
@@ -479,35 +483,6 @@ class Fight:
         tim = self.action()
         return tim
 
-    def water(f):
-        """出水错误检查"""
-
-        def inner(*args, **kwargs):
-            try:
-                ret = f(*args, **kwargs)
-                return ret
-            except Watererror as e:
-                game_log.error(e.type)
-                sleep(5)
-                return
-
-        return inner
-
-    @retry
-    def overtime(f):
-        """ 超时错误检查"""
-
-        def inner(*args, **kwargs):
-            try:
-                ret = f(*args, **kwargs)
-                return ret
-            except OvertimeError as e:
-                game_log.error(e.type)
-                args[0].restart_game()
-                sleep(5)
-
-        return inner
-
     def set_start(self):
         "开始阶段赋初值"
         info = self.info
@@ -538,6 +513,37 @@ class Fight:
             # 循环未能结束
             end("again")
             return False
+
+    def water(f):
+        """出水错误检查"""
+
+        def inner(*args, **kwargs):
+            try:
+                ret = f(*args, **kwargs)
+                return ret
+            except Watererror as e:
+                game_log.error(e.type)
+                args[0].all_time_use = 0
+                sleep(5)
+                return
+
+        return inner
+
+    @retry
+    def overtime(f):
+        """ 超时错误检查"""
+
+        def inner(*args, **kwargs):
+            try:
+                ret = f(*args, **kwargs)
+                return ret
+            except OvertimeError as e:
+                game_log.error(e.type)
+                args[0].restart_game()
+                args[0].action()
+                sleep(5)
+
+        return inner
 
     @overtime
     @water
@@ -570,6 +576,7 @@ class Fight:
             self.all_time_use = int(time()) - begintime
         end("next")
         game_log.info("all time use:" + str(int(time()) - begintime) + "s")
+        self.all_time_use = 0
         sleep(5)
 
     def before_fight(self):

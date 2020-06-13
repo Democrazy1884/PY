@@ -215,6 +215,18 @@ class fightmod:
         pass
 
 
+fightmod_dict = {
+    1: fightmod.mode1,
+    2: fightmod.mode2,
+    3: fightmod.mode3,
+    4: fightmod.mode4,
+    5: fightmod.mode5,
+    6: fightmod.mode6,
+    7: fightmod.mode7,
+    8: fightmod.mode8,
+    9: fightmod.mode9,
+}
+
 if __name__ == "__main__":
     x = fightmod.get_mode(1)
     print(x)
