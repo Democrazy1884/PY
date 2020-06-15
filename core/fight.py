@@ -306,7 +306,7 @@ class Fight:
         team: int,
         group: (int, fightmod),
         mode="time",
-        num="30",
+        num=30,
     ):
         if isinstance(group, int):
             group = fightmod_dict[group]()  # 初始化战斗组对象

@@ -131,7 +131,7 @@ class fightmod:
 
     @classmethod
     def mode4(cls):
-        """模式4 刷华扇"""
+        """模式4 L紫妈 梅蒂欣加铃仙"""
         mode = boss
         stage = default
 
@@ -139,21 +139,28 @@ class fightmod:
             pass
 
         def fight1():
-            skill([1.1, 1.2])
-            graze(1)
+            skill([1.1, 1.2, 2.1, 2.2, 2.3])
             boost(1)
             card(1)
-            return 1
+            boost(1)
+            card(3)
 
         def fight2():
+            boost(1)
             graze(1)
-            boost(2)
             card(3)
-            return 1
+
+            boost(1)
+            graze(1)
+            card(1)
 
         def fight3():
+            boost(1)
             graze(1)
-            boost(3)
+            card(2)
+
+            boost(1)
+            graze(1)
             card(2)
             return 1
 
@@ -162,7 +169,7 @@ class fightmod:
 
     @classmethod
     def mode5(cls):
-        """模式5 刷紫妈L"""
+        """模式5 L华扇"""
         mode = boss
         stage = default
 
@@ -196,8 +203,37 @@ class fightmod:
 
     @classmethod
     def mode6(cls):
-        """模式6 """
-        pass
+        """模式6 L紫妈 莉莉白加帕秋莉 """
+        mode = boss
+        stage = default
+
+        def before_fight():
+            pass
+
+        def fight1():
+            skill([1.1, 1.2, 2.1, 2.2, 2.3])
+            boost(1)
+            card(1)
+            boost(1)
+            card(1)
+
+        def fight2():
+            boost(1)
+            graze(1)
+            card(3)
+            boost(1)
+            graze(1)
+            card(3)
+
+        def fight3():
+            boost(1)
+            attack(2)
+            boost(1)
+            card(2)
+            return 1
+
+        fight = (fight1, fight2, fight3)
+        return cls(mode, stage, fight, before_fight)
 
     @classmethod
     def mode7(cls):

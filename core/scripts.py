@@ -16,10 +16,12 @@ scripts_dict = {
     "March_receive": March_action.only_receive().start,
     # 只发远征
     "March_send": March_action.only_send().start,
-    # 刷L紫妈，使用队伍1,3,5
-    "Yukari_L": [Fight(1, 1, 5), Fight(1, 3, 5), Fight(1, 5, 5)],
+    # 刷L华扇，使用队伍1,3,5
+    "Kasen_L": [Fight(1, 1, 5), Fight(1, 3, 5), Fight(1, 5, 5)],
     # 妖梦推图机 使用队伍3
     "Youmu_test": Fight(1, 3, 2),
+    # 刷L紫妈
+    "Yukari_L": [Fight(1, 1, 4), Fight(1, 2, 6)],
 }
 
 
@@ -29,7 +31,7 @@ def MAIN_way(target):
         return "FIGHT"
     elif target == "MARCH":
         click(1380, 534)
-        return "FIGHT"
+        return "MARCH"
 
 
 def FIGHT_way(target):

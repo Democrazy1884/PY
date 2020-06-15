@@ -17,10 +17,8 @@ def main(sel):
         sleep(5 * 60)
     elif sel == 3:
         for i in ykl:
-            i.set_mode("time", 30)
-        for i in ykl:
-            March()
             i.run()
+            March()
 
     Sub.stop()
 
@@ -28,5 +26,5 @@ def main(sel):
 if __name__ == "__main__":
     Sub.start()
     while 1:
-        main(0)
+        main(3)
     # page_goto("MAIN")

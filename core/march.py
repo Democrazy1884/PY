@@ -323,6 +323,7 @@ class March_action:
             while 1:
                 if time() - start > 60:
                     raise OvertimeError("select_player1")
+                sleep(2)
                 point = mathc_img(get_img(), "ADDGIRL", 0.8)
                 point = remove_same(point)
                 if point:
