@@ -18,10 +18,13 @@ scripts_dict = {
     "March_send": March_action.only_send().start,
     # 刷L华扇，使用队伍1,3,5
     "Kasen_L": [Fight(1, 1, 5), Fight(1, 3, 5), Fight(1, 5, 5)],
-    # 妖梦推图机 使用队伍3
-    "Youmu_test": Fight(1, 3, 2),
+    # 妖梦推图机 使用队伍4
+    "Youmu_test": Fight(1, 4, 2),
     # 刷L紫妈
     "Yukari_L": [Fight(1, 1, 4), Fight(1, 2, 6)],
+    "Youmu_ma": Fight(3, 4, 7),
+    # 活动刷华扇和灵梦
+    "event_Kasen": [Fight(1, 4, 9), Fight(1, 5, 9)],
 }
 
 
