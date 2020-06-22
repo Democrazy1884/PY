@@ -278,8 +278,40 @@ class fightmod:
 
     @classmethod
     def mode8(cls):
-        """模式8 """
-        pass
+        """模式8 活动刷华扇和灵梦两回合"""
+        mode = boss
+        stage = default
+
+        def before_fight():
+            pass
+
+        def fight1():
+            boost(1)
+            skill([1.1, 1.2, 1.3])
+            graze(1)
+            card(1)
+            return 1
+
+        def fight2():
+            boost(3)
+            graze(1)
+            card(3)
+            return 1
+
+        def fight3():
+            boost(3)
+            graze(1)
+            card(2)
+            return ex
+
+        def ex():
+            boost(3)
+            graze(1)
+            card(4)
+            return 1
+
+        fight = (fight1, fight2, fight3)
+        return cls(mode, stage, fight, before_fight)
 
     @classmethod
     def mode9(cls):

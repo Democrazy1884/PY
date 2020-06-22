@@ -25,6 +25,7 @@ scripts_dict = {
     "Youmu_ma": Fight(3, 4, 7),
     # 活动刷华扇和灵梦
     "event_Kasen": [Fight(1, 4, 9), Fight(1, 5, 9)],
+    "event_Kasen_ex": Fight(1, 1, 8),
 }
 
 
