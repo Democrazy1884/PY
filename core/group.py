@@ -295,20 +295,14 @@ class fightmod:
         def fight2():
             boost(3)
             graze(1)
-            card(3)
+            card(5)
             return 1
 
         def fight3():
             boost(3)
             graze(1)
-            card(2)
-            return ex
-
-        def ex():
-            boost(3)
-            graze(1)
-            card(4)
-            return 1
+            attack(2)
+            return fight3
 
         fight = (fight1, fight2, fight3)
         return cls(mode, stage, fight, before_fight)

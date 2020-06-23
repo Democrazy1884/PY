@@ -398,6 +398,7 @@ class Fight:
         if mode == "time and power":
             self.mode = self.run_time_and_power_mode
         self.mode_number = value
+        return self
 
     def run(self):
         "启动"

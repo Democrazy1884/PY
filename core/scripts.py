@@ -24,8 +24,11 @@ scripts_dict = {
     "Yukari_L": [Fight(1, 1, 4), Fight(1, 2, 6)],
     "Youmu_ma": Fight(3, 4, 7),
     # 活动刷华扇和灵梦
-    "event_Kasen": [Fight(1, 4, 9), Fight(1, 5, 9)],
-    "event_Kasen_ex": Fight(1, 1, 8),
+    "event_Kasen": [
+        Fight(1, 2, 8).set_mode("time", 60),
+        Fight(1, 4, 9),
+        Fight(1, 5, 9),
+    ],
 }
 
 

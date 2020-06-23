@@ -93,13 +93,18 @@ def card(value):
     click(p.card_c, 1)
     if value == 1:
         click(p.card_1)  # 符卡1
+        click(p.card_1)
     elif value == 2:
         click(p.card_2)  # 符卡2
+        click(p.card_2)
     elif value == 3:
         click(p.card_3)  # 符卡3
+        click(p.card_3)
     elif value == 4:
         click(p.card_4)  # 符卡4
+        click(p.card_4)
     elif value == 5:
+        click(p.card_5)
         click(p.card_5)
     sleep(1.4)
 

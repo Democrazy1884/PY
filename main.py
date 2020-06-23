@@ -10,7 +10,6 @@ March = scripts_dict.get("March_default")
 ma = scripts_dict.get("Youmu_ma")
 Youmu_test.set_mode("number", 1)
 event_Kasen = scripts_dict.get("event_Kasen")
-event_Kasen_ex = scripts_dict.get("event_Kasen_ex")
 
 
 def main(sel):
@@ -20,9 +19,8 @@ def main(sel):
         Sub.stop()
         sleep(5 * 60)
     elif sel == 1:
-        event_Kasen_ex.run()
-        for f in event_Kasen[::-1]:
-            f.run()
+        for f1 in event_Kasen:
+            f1.run()
             March()
     if sel == 2:
         ma.run()
