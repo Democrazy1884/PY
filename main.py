@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 from time import sleep
-from core.scripts import scripts_dict, page_goto
+from core.scripts import scripts_dict
 from core.sub import Sub
 
 
