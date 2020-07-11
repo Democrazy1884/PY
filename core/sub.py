@@ -21,10 +21,10 @@ class event:
 def backstage(app):  # 子线程
     event.stop.clear()
     global img
-    img = screenshot(app)
+    img = screenshot()
     event.done.set()
     while 1:  # 子线程
-        img = screenshot(app)
+        img = screenshot()
         sleep(STEP * 2)
         # print("sub working")
         if event.stop.is_set():

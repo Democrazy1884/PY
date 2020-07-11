@@ -87,6 +87,7 @@ def screenshot(app=app):
     img = screen.grabWindow(hwnd).toImage()
     img = img.copy(1, 34, 1600, 900)
     img = convertQImageToMat(img)
+    cv2.imwrite("1.jpg", img)
     return img
 
 

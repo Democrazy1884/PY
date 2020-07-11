@@ -515,7 +515,7 @@ if __name__ == "__main__":
                     point.remove(p)
             print(point)
             x = int(point[1][0])
-            y = int(point[1][1] + 50)
+            y = int(point[1][1] + 30)
             click(x, y, 2)  # 银书
             click(1322, 764, 1)
             click(992, 632, 1)
