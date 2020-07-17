@@ -9,7 +9,7 @@ ykl = scripts_dict.get("Yukari_L")
 March = scripts_dict.get("March_default")
 ma = scripts_dict.get("Youmu_ma")
 Youmu_test.set_mode("number", 1)
-event_Kasen = scripts_dict.get("event_Kasen")
+Yukari_H = scripts_dict.get("Yukari_H")
 
 
 def main(sel):
@@ -19,9 +19,7 @@ def main(sel):
         Sub.stop()
         sleep(5 * 60)
     elif sel == 1:
-        for f1 in event_Kasen:
-            f1.run()
-            March()
+        pass
     if sel == 2:
         ma.run()
         March()
@@ -36,4 +34,3 @@ if __name__ == "__main__":
     Sub.start()
     while 1:
         main(1)
-    # page_goto("MAIN")

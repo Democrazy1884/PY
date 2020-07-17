@@ -1,7 +1,43 @@
 from core.fight import Fight
 from core.march import March_action
+from core.group import fightmod
+from core.adb import attack, boost, card, click, graze, skill
 
+wave3 = "wave3"
+boss = "boss"
 default = "default"
+
+
+def Yukari_H():
+    """模式2 H紫妈"""
+    mode = wave3
+    stage = default
+
+    def before_fight():
+        pass
+
+    def fight1():
+        skill([1.1, 1.2])
+        boost(1)
+        graze(1)
+        card(5)
+        return 2
+
+    def fight2():
+        boost(1)
+        graze(1)
+        attack(2)
+        return 2
+
+    def fight3():
+        boost(3)
+        graze(1)
+        attack(2)
+        return 2
+
+    fight = (fight1, fight2, fight3)
+    return fightmod(mode, stage, fight, before_fight)
+
 
 #       选关  队伍 战斗组
 # Fight(int1,int2,int3)
@@ -21,11 +57,6 @@ scripts_dict = {
     # 刷L紫妈
     "Yukari_L": [Fight(1, 1, 4), Fight(1, 2, 6)],
     "Youmu_ma": Fight(3, 4, 7),
-    # 活动刷华扇和灵梦
-    "event_Kasen": [
-        Fight(1, 4, 9).set_mode("time", 40),
-        Fight(1, 1, 9).set_mode("time", 30),
-        Fight(1, 5, 9).set_mode("time", 30),
-        Fight(1, 2, 8).set_mode("time", 30),
-    ],
+    # 日常之刷H紫妈
+    "Yukari_H":  Fight(1, 1, Yukari_H()),
 }
