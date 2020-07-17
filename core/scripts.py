@@ -17,7 +17,7 @@ def Yukari_H():
         pass
 
     def fight1():
-        skill([1.1, 1.2])
+        skill([1.1, 1.2, 1.3])
         boost(1)
         graze(1)
         card(5)
@@ -58,5 +58,5 @@ scripts_dict = {
     "Yukari_L": [Fight(1, 1, 4), Fight(1, 2, 6)],
     "Youmu_ma": Fight(3, 4, 7),
     # 日常之刷H紫妈
-    "Yukari_H":  Fight(1, 1, Yukari_H()),
+    "Yukari_H": Fight(1, 5, Yukari_H()),
 }
