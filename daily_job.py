@@ -6,7 +6,7 @@ from core.sub import Sub
 if __name__ == "__main__":
     March = scripts_dict.get("March_default")
     Yukari_H = scripts_dict.get("Yukari_H")
-    Yukari_H.set_mode("power", 200)
+    Yukari_H.set_mode("power", 56)
     # TODO 写点真的日常操作
     Sub.start()
     while True:
@@ -16,5 +16,5 @@ if __name__ == "__main__":
         while True:
             sleep(600)
             March()
-            if time() - marchTime > 60 * 60 * 2 - timeUse:
+            if time() - marchTime > 60 * 40 - timeUse:
                 break
