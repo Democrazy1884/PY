@@ -9,7 +9,7 @@ default = "default"
 
 
 def Yukari_H():
-    """模式2 H紫妈"""
+    """模式2 H紫妈一回合"""
     mode = wave3
     stage = default
 
@@ -37,6 +37,37 @@ def Yukari_H():
 
     fight = (fight1, fight2, fight3)
     return fightmod(mode, stage, fight, before_fight)
+
+
+def daily1():
+    "日常1 资源战斗"
+    mode = boss
+    stage = default
+
+    def beforefight():
+        pass
+
+    def fight1():
+        boost(1)
+        card(5)
+        attack(2)
+        attack(2)
+        return 1
+
+    def fight2():
+        attack(2)
+        attack(2)
+        attack(2)
+        return 1
+
+    def fight3():
+        attack(2)
+        attack(2)
+        attack(2)
+        return 1
+
+    fight = (fight1, fight2, fight3)
+    return fightmod(mode, stage, fight, beforefight)
 
 
 #       选关  队伍 战斗组

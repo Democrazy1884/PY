@@ -574,6 +574,7 @@ class Fight:
         game_log.info("all time use:" + str(int(time()) - begintime) + "s")
         self.all_time_use = 0
         sleep(5)
+        return int(time()) - begintime
 
     def before_fight(self):
         "战前选择"
