@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+"""战斗用"""
 import os
 import sys
 from time import sleep, time
@@ -10,7 +11,6 @@ from core.image import mathc_img
 from core.sub import get_img
 from core.universe import search
 from retrying import retry
-import numpy as np
 
 STEP = 0.5
 # # # # # # # # # # # # # # # # # # # # #  判断函数  # # # # # # # # # # # # # # # # # # #
@@ -140,13 +140,14 @@ def adjust(sel):
     :sel: 1:normal 2:hard 3:lunatic
 
     """
+    now = 0
     while True:
         if search("LUNATIC"):
             now = 3
         elif search("HARD"):
             now = 2
         elif search("NORMAL"):
-            now = 1
+            now = 3
         if now == sel:
             break
         else:

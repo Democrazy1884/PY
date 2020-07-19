@@ -1,4 +1,6 @@
 # -*- coding:utf-8 -*-
+"""截图子线程"""
+
 import sys
 import threading
 from time import sleep

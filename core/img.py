@@ -1,3 +1,5 @@
+# -*- coding:utf-8 -*-
+"""图片"""
 import os
 import cv2
 

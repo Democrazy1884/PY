@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+"""log"""
 import logging
 
 logging.basicConfig(

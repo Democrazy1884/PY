@@ -1,4 +1,7 @@
 # -*- coding:utf-8 -*-
+"""自定义的错误"""
+
+
 class OvertimeError(RuntimeError):
     """超时"""
 

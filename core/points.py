@@ -1,4 +1,7 @@
 # -*- coding:utf-8 -*-
+"""数据点保存"""
+
+
 def transform(p, screen):
     if isinstance(p, float):
         return int(p * screen)

@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+# TODO 自启动，没写完
 from time import sleep
 
 from core.adb import click, order

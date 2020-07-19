@@ -1,3 +1,7 @@
+# -*- coding:utf-8 -*-
+"""任务库"""
+
+
 from core.fight import Fight
 from core.march import March_action
 from core.group import fightmod

@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+# 切图片用 先得用getpoint截图
 import cv2
 import pyperclip
 

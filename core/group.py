@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+"""战斗用数据组"""
 from core.adb import attack, boost, card, click, graze, skill
 
 

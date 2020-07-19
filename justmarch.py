@@ -1,3 +1,5 @@
+# -*- coding:utf-8 -*-
+# 日常刷远征，技能续费
 from time import sleep
 from core.scripts import scripts_dict
 from core.sub import Sub

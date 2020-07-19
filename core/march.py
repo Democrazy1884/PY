@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+"""远征用"""
 from time import sleep, time
 
 import core.game_log as game_log

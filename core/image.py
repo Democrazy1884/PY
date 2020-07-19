@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+"""图片识别用"""
 import time
 from PyQt5.QtWidgets import QApplication
 import cv2

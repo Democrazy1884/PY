@@ -1,3 +1,5 @@
+# -*- coding:utf-8 -*-
+"""智能页面切换，没写完"""
 from core.universe import search
 from core.adb import click, click_s
 from time import sleep, time

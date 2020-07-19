@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+# 截图 抓点用
 import pyperclip
 import cv2
 from core.image import screenshot
