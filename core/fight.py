@@ -78,7 +78,7 @@ def powerfind(img=get_img):
     "油耗判定"
     ret = search("POWERFIND")
     if isinstance(ret, int):
-        return ret
+        return ret + 5
 
 
 # # # # # # # # # # # # # # # # # # # # #  初级操作函数  # # # # # # # # # # # # # # # # # # #
@@ -444,6 +444,7 @@ class Fight:
             self.power_use = self.info
 
         def mode_end():
+            print("power use" + str(self.power_use * self.n))
             self.info = self.power_use * self.n
             if self.power_use * self.n >= self.mode_number:
                 self.info = None

@@ -1,21 +1,15 @@
 # -*- coding:utf-8 -*-
-# 日常刷远征
-from time import sleep, time
+# 日常消耗体力
+from time import sleep
 from core.scripts import scripts_dict
 from core.sub import Sub
+
 
 March = scripts_dict.get("March_default")
 Yukari_H = scripts_dict.get("Yukari_H")
 Yukari_H.set_mode("power", 56)
-
 Sub.start()
-
 while True:
     timeUse = Yukari_H.run()
     March()
-    marchTime = time()
-    while True:
-        sleep(600)
-        March()
-        if time() - marchTime > 60 * 40 - timeUse:
-            break
+    sleep(200)
