@@ -325,6 +325,7 @@ class Fight:
 
     def reinitialize(self):
         "重新初始化"
+        self.info = None
         self.all_time_use = 0
 
     def restart_game(self):
@@ -398,6 +399,7 @@ class Fight:
 
     def run(self):
         "启动"
+        self.reinitialize()
         return self.mode(self.mode_number)
 
     def run_time_mode(self, tim: int):

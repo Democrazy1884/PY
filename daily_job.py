@@ -9,13 +9,14 @@ Yukari_H = scripts_dict.get("Yukari_H")
 Yukari_H.set_mode("power", 56)
 
 Sub.start()
-
 while True:
     timeUse = Yukari_H.run()
     March()
     marchTime = time()
     while True:
-        sleep(600)
-        March()
+        sleeped_time = time() - marchTime
+        if sleeped_time >= 600:
+            March()
+        sleep(30)
         if time() - marchTime > 60 * 40 - timeUse:
             break
