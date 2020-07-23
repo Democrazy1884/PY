@@ -70,20 +70,38 @@ class fightmod:
             graze(1)
             boost(1)
             card(2)
-            return 1
+            return ex1
+
+        def ex1():
+            boost(1)
+            graze(1)
+            card(1)
+            return ex3
 
         def fight2():
             graze(1)
             boost(1)
             card(4)
-            return 1
+            return ex2
+
+        def ex2():
+            boost(1)
+            graze(1)
+            card(3)
+            return ex3
 
         def fight3():
             skill(1.1)
             graze(1)
             boost(1)
             card(5)
-            return 1
+            return ex3
+
+        def ex3():
+            graze(1)
+            boost(1)
+            attack(2)
+            return ex3
 
         fight = (fight1, fight2, fight3)
         return cls(mode, stage, fight, before_fight)

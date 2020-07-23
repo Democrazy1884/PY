@@ -359,12 +359,15 @@ class Fight:
 
         def selection(stage):
             if isinstance(stage, int):
+                print("select {0}".format(stage))
                 if stage == 1:
                     click(1105, 231)  # 选关1
                 elif stage == 2:
                     click(1105, 426)  # 选关2
                 elif stage == 3:
                     click(1105, 612)  # 选关3
+                elif stage == 4:
+                    click(1105, 700)
             else:
                 point = mathc_img(get_img(), stage, 0.9)
                 if point:
@@ -556,12 +559,10 @@ class Fight:
         # 设定初始值
         self.set_start()
         begintime = self.begintime
-        stage = self.stage
-        team = self.team
         # 选关
-        self.select_stage(stage)
+        self.select_stage(self.stage)
         # 选队伍
-        self.power_use = select_team(team)
+        self.power_use = select_team(self.team)
         while 1:
             # 每轮开始计时
             starttime = int(time())
