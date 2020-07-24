@@ -359,7 +359,7 @@ class Fight:
 
         def selection(stage):
             if isinstance(stage, int):
-                print("select {0}".format(stage))
+                # print("select {0}".format(stage))
                 if stage == 1:
                     click(1105, 231)  # 选关1
                 elif stage == 2:

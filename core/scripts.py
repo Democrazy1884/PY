@@ -13,8 +13,8 @@ default = "default"
 
 
 def last_word():
-    """模式2 H紫妈一回合"""
-    mode = wave3
+    """模式2 一回合"""
+    mode = boss
     stage = default
 
     def before_fight():
@@ -23,7 +23,6 @@ def last_word():
     def fight1():
         skill([1.1, 1.2, 1.3])
         boost(1)
-        graze(1)
         card(5)
         return 2
 
@@ -37,6 +36,66 @@ def last_word():
         boost(3)
         graze(1)
         attack(2)
+        return 2
+
+    fight = (fight1, fight2, fight3)
+    return fightmod(mode, stage, fight, before_fight)
+
+
+def card_boost():
+    """模式2 大量扔符卡"""
+    mode = boss
+    stage = default
+
+    def before_fight():
+        pass
+
+    def fight1():
+        skill([1.1, 1.2, 1.3])
+        boost(2)
+        graze(1)
+        card(1)
+        return 2
+
+    def fight2():
+        boost(2)
+        graze(1)
+        card(3)
+        return 2
+
+    def fight3():
+        boost(1)
+        graze(1)
+        attack(2)
+        return fight3
+
+    fight = (fight1, fight2, fight3)
+    return fightmod(mode, stage, fight, before_fight)
+
+
+def card_boost_lastword():
+    """模式2 3波打BOSS"""
+    mode = boss
+    stage = default
+
+    def before_fight():
+        pass
+
+    def fight1():
+        boost(1)
+        graze(2)
+        card(2)
+        return 2
+
+    def fight2():
+        graze(1)
+        card(4)
+        return 2
+
+    def fight3():
+        skill([1.1, 1.2, 1.3])
+        boost(3)
+        card(5)
         return 2
 
     fight = (fight1, fight2, fight3)
@@ -87,5 +146,7 @@ scripts_dict = {
     "Yukari_L": Fight(1, 1, 4),
     "Youmu_ma": Fight(3, 4, 7),
     # 一回合 last word
-    "last_word": Fight(4, 1, last_word()),
+    "last_word": Fight(1, 1, last_word()),
+    "card_boost": Fight(1, 1, card_boost()),
+    "card_boost_lastword": Fight(1, 1, card_boost_lastword()),
 }

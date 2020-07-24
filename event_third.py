@@ -1,25 +1,23 @@
 # -*- coding:utf-8 -*-
-# 活动规则
+# 活动规则3
 from core.scripts import scripts_dict
 from core.sub import Sub
 
 march = scripts_dict.get("March_default")
 last_word = scripts_dict.get("last_word")
-card_boost = scripts_dict.get("card_boost")
+card_boost_lastword = scripts_dict.get("card_boost_lastword")
 Sub.start()
 # 选关
-last_word.stage = 4
-card_boost.stage = 4
+last_word.stage = 1
+card_boost_lastword.stage = 1
+card_boost_lastword.time = 60
 while True:
-    card_boost.team = 4
-    card_boost.run()
+    card_boost_lastword.team = 3
+    card_boost_lastword.run()
     march.start()
     last_word.team = 1
     last_word.run()
     march.start()
     last_word.team = 2
-    last_word.run()
-    march.start()
-    last_word.team = 3
     last_word.run()
     march.start()
