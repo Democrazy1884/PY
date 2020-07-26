@@ -82,18 +82,17 @@ def card_boost_lastword():
         pass
 
     def fight1():
-        boost(1)
-        graze(2)
+        skill([1.1, 1.2, 1.3])
         card(2)
         return 2
 
     def fight2():
-        graze(1)
-        card(4)
+        boost(3)
+        card(5)
         return 2
 
     def fight3():
-        skill([1.1, 1.2, 1.3])
+
         boost(3)
         card(5)
         return 2
